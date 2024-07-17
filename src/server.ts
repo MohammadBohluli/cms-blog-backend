@@ -5,6 +5,7 @@ import config from "config";
 import articleController from "./articles/articleControllers";
 import userController from "./users/userControllers";
 import connectToDb from "./utils/connectToDb";
+import logger from "./utils/logger";
 
 // config
 const app: Application = express();
@@ -21,6 +22,6 @@ app.use("/api/articles", articleController);
 
 // server start
 app.listen(PORT, () => {
-  console.log(`🔥 Server is Running on port: ${PORT}`);
+  logger.info(`Server is Running on address: http://localhost:${PORT}`);
   connectToDb();
 });
