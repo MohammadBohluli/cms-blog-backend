@@ -1,13 +1,15 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
+import express, { Application } from "express";
+import config from "config";
 import articleController from "./articles/articleControllers";
 import userController from "./users/userControllers";
+import connectToDb from "./utils/connectToDb";
 
 // config
-const app = express();
-dotenv.config();
-const PORT = process.env.PORT;
+const app: Application = express();
+// dotenv.config();
+const PORT = config.get<number>("port");
 
 // middlewares
 app.use(cors());
@@ -20,4 +22,5 @@ app.use("/api/articles", articleController);
 // server start
 app.listen(PORT, () => {
   console.log(`🔥 Server is Running on port: ${PORT}`);
+  connectToDb();
 });
