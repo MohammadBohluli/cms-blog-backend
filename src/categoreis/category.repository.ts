@@ -11,9 +11,7 @@ class CategoryRepo {
     return categories;
   }
 
-  public async getCategoryBySlug(
-    categorySlug: string
-  ): Promise<CategoryDocument> {
+  public async getBySlug(categorySlug: string): Promise<CategoryDocument> {
     const category = await CategoryModel.findOne({ slug: categorySlug });
     if (!category) {
       throw new NotFoundError("Category not found");
@@ -21,12 +19,12 @@ class CategoryRepo {
     return category;
   }
 
-  public async createCategory(title: string): Promise<CategoryDocument> {
+  public async create(title: string): Promise<CategoryDocument> {
     const category = await CategoryModel.create({ title: title });
     return category;
   }
 
-  public async updateCategoryBySlug(
+  public async updateBySlug(
     categorySlug: string,
     newtitle: string
   ): Promise<CategoryDocument> {
@@ -44,7 +42,7 @@ class CategoryRepo {
     return updatedCategory;
   }
 
-  public async deleteCategoryBySlug(categorySlug: string): Promise<void> {
+  public async deleteBySlug(categorySlug: string): Promise<void> {
     const deletedCategory = await CategoryModel.findOneAndDelete({
       slug: categorySlug,
     });
