@@ -17,6 +17,7 @@ const authenticated = async function (
     const decoded = await userServices.verifyAccessToken(token);
 
     const user = await userRepo.getUserById(decoded.id);
+
     req.user = user;
 
     next();

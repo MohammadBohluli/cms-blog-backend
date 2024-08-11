@@ -156,6 +156,7 @@ class AuthServices {
         }
         if (payload !== undefined) {
           const userId = payload as { id: string };
+
           resolve(userId);
         }
         reject(new Error("Token generation failed"));

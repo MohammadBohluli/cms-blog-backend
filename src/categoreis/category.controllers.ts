@@ -1,4 +1,6 @@
-import { NextFunction, Response, Request } from "express";
+import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
+import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
 import categoryServices from "./category.services";
 import {
@@ -7,8 +9,6 @@ import {
   GetCategorySchema,
   UpdateCategorySchema,
 } from "./schema/category.schema";
-import mongoose from "mongoose";
-import { ExistObjectError } from "../errors";
 
 class CategoryController {
   public async getAllHandler(

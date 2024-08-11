@@ -1,6 +1,6 @@
 import { Router } from "express";
+import { authenticated, isAdmin, validateSchema } from "../middlewares";
 import categoryController from "./category.controllers";
-import { validateSchema } from "../middlewares";
 import {
   createCategorySchema,
   updateCategorySchema,
@@ -14,16 +14,22 @@ router.get("/:categorySlug", categoryController.getHandler);
 
 router.post(
   "/",
+  [authenticated, isAdmin],
   validateSchema(createCategorySchema),
   categoryController.createHandler
 );
 
 router.patch(
   "/:categorySlug",
+  [authenticated, isAdmin],
   validateSchema(updateCategorySchema),
   categoryController.updateHandler
 );
 
-router.delete("/:categorySlug", categoryController.deleteHandler);
+router.delete(
+  "/:categorySlug",
+  [authenticated, isAdmin],
+  categoryController.deleteHandler
+);
 
 export default router;

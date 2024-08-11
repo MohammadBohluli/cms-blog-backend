@@ -30,8 +30,8 @@ class AuthController {
 
       await authServices.validatePassowrd(password, user);
 
-      const accessToken = await authServices.createAccessToken(user.id);
-      const refreshToken = await authServices.createRefreshToken(user.id);
+      const accessToken = await authServices.createAccessToken(user.userId);
+      const refreshToken = await authServices.createRefreshToken(user.userId);
 
       return res.status(200).json({
         success: true,
