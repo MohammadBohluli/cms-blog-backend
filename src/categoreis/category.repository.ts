@@ -1,6 +1,8 @@
+import slugify from "slugify";
 import { NotFoundError } from "../errors";
 import { CategoryModel } from "../models/category.model";
 import { CategoryDocument } from "../types/category.types";
+import { title } from "process";
 
 class CategoryRepo {
   public async getAllCategory(): Promise<CategoryDocument[]> {
@@ -20,7 +22,11 @@ class CategoryRepo {
   }
 
   public async create(title: string): Promise<CategoryDocument> {
-    const category = await CategoryModel.create({ title: title });
+    const category = await CategoryModel.create({
+      title: title,
+      slug: slugify(title, { lower: true }),
+    });
+
     return category;
   }
 
@@ -32,7 +38,7 @@ class CategoryRepo {
       {
         slug: categorySlug,
       },
-      { title: newtitle }
+      { title: newtitle, slug: slugify(newtitle, { lower: true }) }
     );
     if (!updatedCategory) {
       throw new NotFoundError(

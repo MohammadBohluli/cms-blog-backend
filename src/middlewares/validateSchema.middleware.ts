@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodSchema } from "zod";
 
-const validationSchemaMiddleware =
+const validateSchema =
   (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
     const { success, error } = schema.safeParse({
       body: req.body,
@@ -29,4 +29,4 @@ const validationSchemaMiddleware =
     next();
   };
 
-export default validationSchemaMiddleware;
+export default validateSchema;
