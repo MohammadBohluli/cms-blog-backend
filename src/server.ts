@@ -1,10 +1,11 @@
 import config from "config";
 import cors from "cors";
 import express, { Application } from "express";
+import articlesRouter from "./articles/article.routers";
 import authRouter from "./auth/auth.routers";
+import categoriesRouter from "./categoreis/category.routers";
 import { displayRequest, errorHandler } from "./middlewares";
 import { connectToDb, logger } from "./utils";
-import categoriesRouter from "./categoreis/category.routers";
 
 // config
 const app: Application = express();
@@ -19,6 +20,7 @@ app.use(displayRequest);
 // rout group
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoriesRouter);
+app.use("/api/articles", articlesRouter);
 
 // error handler middleware
 app.use(errorHandler);

@@ -17,9 +17,9 @@ export class ArticleSchema extends TimeStamps {
   public userId!: Ref<UserSchema>;
 
   @prop({ required: true })
-  public categoryId!: Ref<CategorySchema>[];
+  public categoreis!: Ref<CategorySchema>[];
 
-  @prop({ required: true, minlength: 3, maxlength: 155 })
+  @prop({ required: true, minlength: 5, maxlength: 155 })
   public title!: string;
 
   @prop({ unique: true, required: true })
@@ -30,7 +30,7 @@ export class ArticleSchema extends TimeStamps {
     default: ArticleStatus.DRAFT,
     required: true,
   })
-  public role!: ArticleStatus;
+  public status!: ArticleStatus;
 
   @prop({ required: true, minlength: 50 })
   public content!: string;

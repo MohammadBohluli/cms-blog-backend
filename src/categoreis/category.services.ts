@@ -1,5 +1,8 @@
+import _, { xor } from "lodash";
+import { CategoryDocument } from "../types/category.types";
 import categoryMapper from "./category.mapper";
 import categoryRepo from "./category.repository";
+import { NotFoundError } from "../errors";
 
 class CategoryServices {
   public async getAllCategory() {
@@ -22,6 +25,20 @@ class CategoryServices {
 
   public async deleteCategory(categorySlug: string) {
     await categoryRepo.deleteBySlug(categorySlug);
+  }
+
+  public async isExistCategory(categories: string[]): Promise<string[]> {
+    const categoryList = await categoryRepo.isExist(categories);
+    const missMatchFields = _.difference(
+      categories,
+      _.map(categoryList, _.property("slug"))
+    );
+
+    if (missMatchFields.length === 0) {
+      return _.map<CategoryDocument, string>(categoryList, _.property("slug"));
+    } else {
+      throw new NotFoundError(`categories ${missMatchFields} not found`);
+    }
   }
 }
 

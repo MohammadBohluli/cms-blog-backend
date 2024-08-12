@@ -53,6 +53,13 @@ class CategoryRepo {
     });
     if (!deletedCategory) throw new NotFoundError("category not found.");
   }
+
+  public async isExist(categoreis: string[]): Promise<CategoryDocument[]> {
+    const categoryList = await CategoryModel.find({
+      slug: { $in: categoreis },
+    }).select(["slug", "-_id"]);
+    return categoryList;
+  }
 }
 
 const categoryRepo = new CategoryRepo();
