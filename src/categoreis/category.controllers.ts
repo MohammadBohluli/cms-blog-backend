@@ -75,7 +75,7 @@ class CategoryController {
     const { categorySlug } = req.params;
     const { title } = req.body;
     try {
-      await categoryServices.updateCategory(categorySlug, title);
+      await categoryServices.updateCategory(categorySlug, req.body);
       res.status(200).json({
         success: true,
         statusCode: 200,

@@ -3,6 +3,7 @@ import { CategoryDocument } from "../types/category.types";
 import categoryMapper from "./category.mapper";
 import categoryRepo from "./category.repository";
 import { NotFoundError } from "../errors";
+import { UpdateCategorySchema } from "./schema/category.schema";
 
 class CategoryServices {
   public async getAllCategory() {
@@ -19,8 +20,11 @@ class CategoryServices {
     return await categoryRepo.create(categoryTitle);
   }
 
-  public async updateCategory(categorySlug: string, categoryTitle: string) {
-    await categoryRepo.updateBySlug(categorySlug, categoryTitle);
+  public async updateCategory(
+    categorySlug: string,
+    category: UpdateCategorySchema["body"]
+  ) {
+    await categoryRepo.updateBySlug(categorySlug, category);
   }
 
   public async deleteCategory(categorySlug: string) {

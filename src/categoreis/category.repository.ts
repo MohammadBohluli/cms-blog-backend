@@ -1,6 +1,7 @@
 import { NotFoundError } from "../errors";
 import { CategoryModel } from "../models/category.model";
 import { CategoryDocument } from "../types/category.types";
+import { UpdateCategorySchema } from "./schema/category.schema";
 
 class CategoryRepo {
   public async getAllCategory(): Promise<CategoryDocument[]> {
@@ -29,13 +30,13 @@ class CategoryRepo {
 
   public async updateBySlug(
     categorySlug: string,
-    newtitle: string
+    category: UpdateCategorySchema["body"]
   ): Promise<CategoryDocument> {
     const updatedCategory = await CategoryModel.findOneAndUpdate(
       {
         slug: categorySlug,
       },
-      { title: newtitle }
+      { title: category.title }
     );
     if (!updatedCategory) {
       throw new NotFoundError(
