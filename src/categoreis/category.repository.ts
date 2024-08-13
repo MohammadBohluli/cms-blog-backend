@@ -1,7 +1,6 @@
 import { NotFoundError } from "../errors";
 import { CategoryModel } from "../models/category.model";
 import { CategoryDocument } from "../types/category.types";
-import { slugy } from "../utils";
 
 class CategoryRepo {
   public async getAllCategory(): Promise<CategoryDocument[]> {
@@ -23,7 +22,6 @@ class CategoryRepo {
   public async create(title: string): Promise<CategoryDocument> {
     const category = await CategoryModel.create({
       title: title,
-      slug: slugy(title),
     });
 
     return category;
@@ -37,7 +35,7 @@ class CategoryRepo {
       {
         slug: categorySlug,
       },
-      { title: newtitle, slug: slugy(newtitle) }
+      { title: newtitle }
     );
     if (!updatedCategory) {
       throw new NotFoundError(

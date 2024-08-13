@@ -82,6 +82,12 @@ class CategoryController {
         message: "Successfully update.",
       });
     } catch (error) {
+      if (
+        error instanceof mongoose.mongo.MongoServerError &&
+        error.code === 11000
+      ) {
+        return next(new ExistObjectError("Category already exist."));
+      }
       next(error);
     }
   }
