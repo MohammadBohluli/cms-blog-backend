@@ -105,7 +105,7 @@ class AuthServices {
 
       const option: jwt.SignOptions = {
         algorithm: "HS256",
-        expiresIn: "30 minutes",
+        expiresIn: "120 minutes",
       };
       return jwt.sign(payload, signingKey, option, (error, token) => {
         if (error) {
@@ -128,7 +128,7 @@ class AuthServices {
 
       const option: jwt.SignOptions = {
         algorithm: "HS256",
-        expiresIn: "59 minutes",
+        expiresIn: "360 minutes",
       };
       return jwt.sign(payload, signingKey, option, (error, token) => {
         if (error) {

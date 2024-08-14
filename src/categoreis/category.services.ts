@@ -1,8 +1,8 @@
-import _, { xor } from "lodash";
+import _ from "lodash";
+import { NotFoundError } from "../errors";
 import { CategoryDocument } from "../types/category.types";
 import categoryMapper from "./category.mapper";
 import categoryRepo from "./category.repository";
-import { NotFoundError } from "../errors";
 import { UpdateCategorySchema } from "./schema/category.schema";
 
 class CategoryServices {

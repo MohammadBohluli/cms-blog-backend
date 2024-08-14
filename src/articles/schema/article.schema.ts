@@ -23,18 +23,15 @@ export const updateArticleSchema = z.object({
     title: z
       .string({ required_error: "title is required" })
       .min(5, { message: "title must be more than 3 characters" })
-      .max(155, { message: "tile must be less than 155 characters" })
-      .optional(),
+      .max(155, { message: "tile must be less than 155 characters" }),
     categories: z
       .string({ required_error: "categories is required" })
       .array()
-      .min(1, { message: "Select at least one category" })
-      .optional(),
-    status: z.enum([ArticleStatus.PUBLISHED, ArticleStatus.DRAFT]).optional(),
-    content: z
-      .string({ required_error: "content is required" })
-      .min(50)
-      .optional(),
+      .min(1, { message: "Select at least one category" }),
+    status: z.enum([ArticleStatus.PUBLISHED, ArticleStatus.DRAFT], {
+      message: "Status can only be 'published' or 'draft'",
+    }),
+    content: z.string({ required_error: "content is required" }).min(50),
   }),
   params: z.strictObject({
     articleSlug: z.string(),

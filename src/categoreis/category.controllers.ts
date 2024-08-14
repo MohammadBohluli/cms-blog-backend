@@ -40,6 +40,7 @@ class CategoryController {
       next(error);
     }
   }
+
   public async createHandler(
     req: Request<{}, {}, CreateCategorySchema>,
     res: Response<ResponseJson>,
@@ -63,6 +64,7 @@ class CategoryController {
       next(error);
     }
   }
+
   public async updateHandler(
     req: Request<
       UpdateCategorySchema["params"],
@@ -73,7 +75,7 @@ class CategoryController {
     next: NextFunction
   ) {
     const { categorySlug } = req.params;
-    const { title } = req.body;
+
     try {
       await categoryServices.updateCategory(categorySlug, req.body);
       res.status(200).json({
@@ -91,6 +93,7 @@ class CategoryController {
       next(error);
     }
   }
+
   public async deleteHandler(
     req: Request<DeleteCategorySchema, {}, {}>,
     res: Response<ResponseJson>,

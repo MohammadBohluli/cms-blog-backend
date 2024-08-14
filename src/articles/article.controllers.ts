@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
+import authServices from "../auth/auth.services";
+import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
 import articleServices from "./article.services";
 import {
@@ -7,9 +10,6 @@ import {
   GetArticleSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
-import authServices from "../auth/auth.services";
-import mongoose from "mongoose";
-import { ExistObjectError } from "../errors";
 
 class ArticleController {
   public async getAllHandler(
@@ -44,15 +44,10 @@ class ArticleController {
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
-    const { title, categories, content, status } = req.body;
     try {
       const user = authServices.checkUserUndefined(req.user);
 
-      await articleServices.createArticle(
-        user.userId,
-        { title, content, status },
-        categories
-      );
+      await articleServices.createArticle(user.userId, req.body);
 
       res.status(201).json({
         success: true,
@@ -64,7 +59,11 @@ class ArticleController {
         error instanceof mongoose.mongo.MongoServerError &&
         error.code === 11000
       ) {
-        return next(new ExistObjectError("Article already exist."));
+        return next(
+          new ExistObjectError(
+            "Article already exist with title, please change your title."
+          )
+        );
       }
       next(error);
     }
@@ -80,13 +79,9 @@ class ArticleController {
     next: NextFunction
   ) {
     const { articleSlug } = req.params;
-    const { categories, content, status, title } = req.body;
+
     try {
-      await articleServices.updateArticle(
-        articleSlug,
-        { content, status, title },
-        categories as string[]
-      );
+      await articleServices.updateArticle(articleSlug, req.body);
 
       res.status(200).json({
         success: true,

@@ -18,7 +18,7 @@ router.post(
   articleController.createHandler
 );
 
-router.patch(
+router.put(
   "/:articleSlug",
   [authenticated, validateSchema(updateArticleSchema)],
   articleController.updateHandler

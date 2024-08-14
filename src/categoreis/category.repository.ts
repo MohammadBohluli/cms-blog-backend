@@ -1,6 +1,8 @@
 import { NotFoundError } from "../errors";
+import { ArticleModel } from "../models/article.model";
 import { CategoryModel } from "../models/category.model";
 import { CategoryDocument } from "../types/category.types";
+import { slugy } from "../utils";
 import { UpdateCategorySchema } from "./schema/category.schema";
 
 class CategoryRepo {
@@ -43,19 +45,29 @@ class CategoryRepo {
         "Category not found or somthing wrong in update."
       );
     }
+
+    // update all article categories when certain category is updated
+    await ArticleModel.updateMany(
+      { categories: { $in: [categorySlug] } },
+      { $set: { "categories.$": slugy(category.title) } }
+    );
+
     return updatedCategory;
   }
 
   public async deleteBySlug(categorySlug: string): Promise<void> {
+    // FIXME: when remove category, category not less than one
+    await ArticleModel.updateMany({}, { $pull: { categories: categorySlug } });
+
     const deletedCategory = await CategoryModel.findOneAndDelete({
       slug: categorySlug,
     });
     if (!deletedCategory) throw new NotFoundError("category not found.");
   }
 
-  public async isExist(categoreis: string[]): Promise<CategoryDocument[]> {
+  public async isExist(categories: string[]): Promise<CategoryDocument[]> {
     const categoryList = await CategoryModel.find({
-      slug: { $in: categoreis },
+      slug: { $in: categories },
     }).select(["slug", "-_id"]);
     return categoryList;
   }

@@ -7,7 +7,7 @@ class ArticleMapper {
       userId: article.userId,
       title: article.title,
       slug: article.slug,
-      categories: article.categoreis,
+      categories: article.categories,
       status: article.status,
       content: article.content,
     }));
@@ -19,7 +19,7 @@ class ArticleMapper {
       userId: articleDocument.userId,
       title: articleDocument.title,
       slug: articleDocument.slug,
-      categories: articleDocument.categoreis,
+      categories: articleDocument.categories,
       status: articleDocument.status,
       content: articleDocument.content,
     };

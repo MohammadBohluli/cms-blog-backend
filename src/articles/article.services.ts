@@ -1,6 +1,10 @@
 import { ArticleDocument } from "../types/article.types";
 import articleMapper from "./article.mapper";
 import articleRepo from "./article.repository";
+import {
+  CreateArticleSchema,
+  UpdateArticleSchema,
+} from "./schema/article.schema";
 
 class ArticleServices {
   public async getAllArticle() {
@@ -15,18 +19,16 @@ class ArticleServices {
 
   public async createArticle(
     userId: string,
-    article: Partial<ArticleDocument>,
-    categories: string[]
+    article: CreateArticleSchema
   ): Promise<ArticleDocument> {
-    return await articleRepo.create(userId, article, categories);
+    return await articleRepo.create(userId, article);
   }
 
   public async updateArticle(
     articleSlug: string,
-    article: Partial<ArticleDocument>,
-    categories: string[]
+    article: UpdateArticleSchema["body"]
   ): Promise<void> {
-    await articleRepo.updateBySlug(articleSlug, article, categories);
+    await articleRepo.updateBySlug(articleSlug, article);
   }
 
   public async deleteArticle(articleSlug: string): Promise<void> {

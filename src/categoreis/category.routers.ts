@@ -19,7 +19,7 @@ router.post(
   categoryController.createHandler
 );
 
-router.patch(
+router.put(
   "/:categorySlug",
   [authenticated, isAdmin],
   validateSchema(updateCategorySchema),
