@@ -1,6 +1,6 @@
 import { Router } from "express";
 import articleController from "./article.controllers";
-import { authenticated, validateSchema } from "../middlewares";
+import { authenticated, isOwn, validateSchema } from "../middlewares";
 import {
   createArticleSchema,
   updateArticleSchema,
@@ -10,7 +10,6 @@ const router = Router();
 
 router.get("/", articleController.getAllHandler);
 
-// get own post
 router.get("/:userId", articleController.getUserArticlesHandler);
 
 router.get("/:articleSlug", articleController.getHandler);
@@ -23,10 +22,14 @@ router.post(
 
 router.put(
   "/:articleSlug",
-  [authenticated, validateSchema(updateArticleSchema)],
+  [authenticated, isOwn, validateSchema(updateArticleSchema)],
   articleController.updateHandler
 );
 
-router.delete("/:articleSlug", authenticated, articleController.deleteHandler);
+router.delete(
+  "/:articleSlug",
+  [authenticated, isOwn],
+  articleController.deleteHandler
+);
 
 export default router;
