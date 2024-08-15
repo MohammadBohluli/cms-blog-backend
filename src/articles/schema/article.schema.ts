@@ -50,7 +50,16 @@ export const getArticleSchema = z.object({
   }),
 });
 
+export const getUserArticlesSchema = z.object({
+  params: z.strictObject({
+    userId: z.string(),
+  }),
+});
+
 export type CreateArticleSchema = z.infer<typeof createArticleSchema>["body"];
 export type UpdateArticleSchema = z.infer<typeof updateArticleSchema>;
 export type DeleteArticleSchema = z.infer<typeof deleteArticleSchema>["params"];
 export type GetArticleSchema = z.infer<typeof getArticleSchema>["params"];
+export type GetUserArticlesSchema = z.infer<
+  typeof getUserArticlesSchema
+>["params"];

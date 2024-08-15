@@ -8,6 +8,7 @@ import {
   CreateArticleSchema,
   DeleteArticleSchema,
   GetArticleSchema,
+  GetUserArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
 
@@ -19,6 +20,20 @@ class ArticleController {
   ) {
     try {
       const articles = await articleServices.getAllArticle();
+      res.status(200).json({ success: true, statusCode: 200, data: articles });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async getUserArticlesHandler(
+    req: Request<GetUserArticlesSchema>,
+    res: Response<ResponseJson>,
+    next: NextFunction
+  ) {
+    const { userId } = req.params;
+    try {
+      const articles = await articleServices.getUserArticles(userId);
       res.status(200).json({ success: true, statusCode: 200, data: articles });
     } catch (error) {
       next(error);

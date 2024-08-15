@@ -10,6 +10,9 @@ const router = Router();
 
 router.get("/", articleController.getAllHandler);
 
+// get own post
+router.get("/:userId", articleController.getUserArticlesHandler);
+
 router.get("/:articleSlug", articleController.getHandler);
 
 router.post(

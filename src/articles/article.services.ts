@@ -12,6 +12,11 @@ class ArticleServices {
     return articleMapper.toDispalyAll(articles);
   }
 
+  public async getUserArticles(userId: string) {
+    const articles = await articleRepo.getUserArticles(userId);
+    return articleMapper.toDispalyAll(articles);
+  }
+
   public async getArticle(articleSlug: string) {
     const article = await articleRepo.getBySlug(articleSlug);
     return articleMapper.toDispaly(article);

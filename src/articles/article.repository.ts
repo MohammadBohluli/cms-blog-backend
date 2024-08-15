@@ -23,6 +23,13 @@ class ArticleRepo {
     return article;
   }
 
+  public async getUserArticles(userId: string): Promise<ArticleDocument[]> {
+    const articles = await ArticleModel.find({ userId: userId });
+    if (articles.length === 0)
+      throw new NotFoundError("User no article add yet.");
+    return articles;
+  }
+
   public async create(
     userId: string,
     article: CreateArticleSchema
