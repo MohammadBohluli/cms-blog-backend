@@ -10,6 +10,8 @@ class ArticleMapper {
       categories: article.categories,
       status: article.status,
       content: article.content,
+      createdAt: article.createdAt,
+      updatedAt: article.updatedAt,
     }));
   }
 
@@ -22,6 +24,8 @@ class ArticleMapper {
       categories: articleDocument.categories,
       status: articleDocument.status,
       content: articleDocument.content,
+      createdAt: articleDocument.createdAt,
+      updatedAt: articleDocument.updatedAt,
     };
   }
 }
