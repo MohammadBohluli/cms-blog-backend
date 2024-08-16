@@ -56,10 +56,19 @@ export const getUserArticlesSchema = z.object({
   }),
 });
 
+export const queryArticlesSchema = z.object({
+  query: z.strictObject({
+    page: z.number(),
+    limit: z.number(),
+    offset: z.number(),
+  }),
+});
+
 export type CreateArticleSchema = z.infer<typeof createArticleSchema>["body"];
 export type UpdateArticleSchema = z.infer<typeof updateArticleSchema>;
 export type DeleteArticleSchema = z.infer<typeof deleteArticleSchema>["params"];
 export type GetArticleSchema = z.infer<typeof getArticleSchema>["params"];
+export type QueryArticlesSchema = z.infer<typeof queryArticlesSchema>["query"];
 export type GetUserArticlesSchema = z.infer<
   typeof getUserArticlesSchema
 >["params"];
