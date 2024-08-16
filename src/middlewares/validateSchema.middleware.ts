@@ -6,6 +6,7 @@ const validateSchema =
     const { success, error } = schema.safeParse({
       body: req.body,
       params: req.params,
+      query: req.query,
     });
 
     // if (!success) {
