@@ -2,17 +2,25 @@ import categoryServices from "../categoreis/category.services";
 import { NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
 import { ArticleDocument } from "../types/article.types";
+import { paginate } from "../utils";
 import {
   CreateArticleSchema,
+  QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
 
 class ArticleRepo {
-  public async getAll(): Promise<ArticleDocument[]> {
-    const articles = await ArticleModel.find();
-    if (articles.length === 0)
-      throw new NotFoundError("There are no article add yet.");
-    return articles;
+  public async getAll(query: QueryArticlesSchema) {
+    // pagination
+    const page = parseInt(query.page) || 1;
+    const limit = parseInt(query.limit) || 2;
+    const offset = (page - 1) * limit;
+    const totalItems = await ArticleModel.countDocuments({});
+    const pagination = paginate(page, limit, totalItems);
+
+    const articles = await ArticleModel.find().skip(offset).limit(limit);
+    if (articles.length === 0) throw new NotFoundError("Not found");
+    return { articles, pagination };
   }
 
   public async getBySlug(articleSlug: string): Promise<ArticleDocument> {

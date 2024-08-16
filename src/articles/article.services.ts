@@ -3,13 +3,15 @@ import articleMapper from "./article.mapper";
 import articleRepo from "./article.repository";
 import {
   CreateArticleSchema,
+  QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
 
 class ArticleServices {
-  public async getAllArticle() {
-    const articles = await articleRepo.getAll();
-    return articleMapper.toDispalyAll(articles);
+  public async getAllArticle(query: QueryArticlesSchema) {
+    const { articles, pagination } = await articleRepo.getAll(query);
+    const articleList = articleMapper.toDispalyAll(articles);
+    return { articleList, pagination };
   }
 
   public async getUserArticles(userId: string) {

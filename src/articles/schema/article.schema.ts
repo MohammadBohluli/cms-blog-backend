@@ -58,9 +58,8 @@ export const getUserArticlesSchema = z.object({
 
 export const queryArticlesSchema = z.object({
   query: z.strictObject({
-    page: z.number(),
-    limit: z.number(),
-    offset: z.number(),
+    page: z.string(),
+    limit: z.string(),
   }),
 });
 

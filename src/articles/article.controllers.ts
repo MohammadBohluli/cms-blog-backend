@@ -9,18 +9,32 @@ import {
   DeleteArticleSchema,
   GetArticleSchema,
   GetUserArticlesSchema,
+  QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
 
 class ArticleController {
   public async getAllHandler(
-    req: Request,
+    req: Request<{}, {}, {}, QueryArticlesSchema>,
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
     try {
-      const articles = await articleServices.getAllArticle();
-      res.status(200).json({ success: true, statusCode: 200, data: articles });
+      const { articleList, pagination } = await articleServices.getAllArticle(
+        req.query
+      );
+
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        data: articleList,
+        pagination: {
+          totalPages: pagination.totalPages,
+          previousPage: pagination.previousPage,
+          currentPage: pagination.currentPage,
+          nextPage: pagination.nextPage,
+        },
+      });
     } catch (error) {
       next(error);
     }
