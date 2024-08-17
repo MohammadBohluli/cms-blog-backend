@@ -42,10 +42,12 @@ class ArticleController {
 
   public async getUserArticlesHandler(
     req: Request<GetUserArticlesSchema>,
+
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
     const { userId } = req.params;
+
     try {
       const articles = await articleServices.getUserArticles(userId);
       res.status(200).json({ success: true, statusCode: 200, data: articles });
@@ -56,10 +58,12 @@ class ArticleController {
 
   public async getHandler(
     req: Request<GetArticleSchema>,
+
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
     const { articleSlug } = req.params;
+
     try {
       const article = await articleServices.getArticle(articleSlug);
       res.status(200).json({ success: true, statusCode: 200, data: article });

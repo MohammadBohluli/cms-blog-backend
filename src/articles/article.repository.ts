@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import categoryServices from "../categoreis/category.services";
 import { NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
@@ -8,9 +9,12 @@ import {
   QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
+import _ from "lodash";
 
 class ArticleRepo {
   public async getAll(query: QueryArticlesSchema) {
+    const filter: FilterQuery<ArticleDocument> = {};
+
     // pagination
     const page = parseInt(query.page) || 1;
     const limit = parseInt(query.limit) || 2;
@@ -18,7 +22,54 @@ class ArticleRepo {
     const totalItems = await ArticleModel.countDocuments({});
     const pagination = paginate(page, limit, totalItems);
 
-    const articles = await ArticleModel.find().skip(offset).limit(limit);
+    // exclude fields
+    // const exclude = ["category", "limit", "sortBy", "page", "title"];
+    // exclude.forEach((field) => delete query[field as keyof typeof query]);
+
+    // let queryStr = JSON.stringify(query);
+    // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    // queryStr = JSON.parse(queryStr);
+
+    // search title
+    if (query.title) {
+      filter.title = { $regex: query.title, $options: "i" };
+    }
+
+    // category filter
+    if (query.category) {
+      const categories = query.category.split(",");
+      filter.categories = { $all: categories };
+    }
+
+    //createdAt filter
+    if (query.startCreatedAt || query.endCreatedAt) {
+      filter.createdAt = {};
+
+      if (query.startCreatedAt) {
+        filter.createdAt.$gte = new Date(query.startCreatedAt);
+      }
+
+      if (query.endCreatedAt) {
+        filter.createdAt.$lte = new Date(query.endCreatedAt);
+      }
+    }
+
+    // sorting
+    let sort: { [key: string]: 1 | -1 } = {};
+    if (query.sortBy) {
+      if (!query.sortBy.startsWith("-")) {
+        sort[query.sortBy] = 1;
+      }
+      sort[query.sortBy.substring(1)] = -1;
+    } else {
+      sort["createdAt"] = -1;
+    }
+
+    const articles = await ArticleModel.find(filter)
+      .sort(sort)
+      .skip(offset)
+      .limit(limit)
+      .exec();
     if (articles.length === 0) throw new NotFoundError("Not found");
     return { articles, pagination };
   }

@@ -60,6 +60,11 @@ export const queryArticlesSchema = z.object({
   query: z.strictObject({
     page: z.string(),
     limit: z.string(),
+    title: z.string(),
+    category: z.string(),
+    sortBy: z.string(),
+    startCreatedAt: z.date(),
+    endCreatedAt: z.date(),
   }),
 });
 
