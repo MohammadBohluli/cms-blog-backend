@@ -13,22 +13,8 @@ import _ from "lodash";
 
 class ArticleRepo {
   public async getAll(query: QueryArticlesSchema) {
+    // TODO: refactor filters to OOP APIFilters
     const filter: FilterQuery<ArticleDocument> = {};
-
-    // pagination
-    const page = parseInt(query.page) || 1;
-    const limit = parseInt(query.limit) || 2;
-    const offset = (page - 1) * limit;
-    const totalItems = await ArticleModel.countDocuments({});
-    const pagination = paginate(page, limit, totalItems);
-
-    // exclude fields
-    // const exclude = ["category", "limit", "sortBy", "page", "title"];
-    // exclude.forEach((field) => delete query[field as keyof typeof query]);
-
-    // let queryStr = JSON.stringify(query);
-    // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    // queryStr = JSON.parse(queryStr);
 
     // search title
     if (query.title) {
@@ -64,6 +50,13 @@ class ArticleRepo {
     } else {
       sort["createdAt"] = -1;
     }
+
+    // pagination
+    const page = parseInt(query.page) || 1;
+    const limit = parseInt(query.limit) || 2;
+    const offset = (page - 1) * limit;
+    const totalItems = await ArticleModel.countDocuments(filter);
+    const pagination = paginate(page, limit, totalItems);
 
     const articles = await ArticleModel.find(filter)
       .sort(sort)
