@@ -9,7 +9,6 @@ import {
   QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
-import _ from "lodash";
 
 class ArticleRepo {
   public async getAll(query: QueryArticlesSchema) {

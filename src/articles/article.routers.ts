@@ -9,7 +9,7 @@ import {
 const router = Router();
 
 router.get("/", articleController.getAllHandler);
-
+// FIXME: seperate two below route
 router.get("/:userId", articleController.getUserArticlesHandler);
 
 router.get("/:articleSlug", articleController.getHandler);
