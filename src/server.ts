@@ -16,6 +16,7 @@ const PORT = config.get<number>("port");
 app.use(cors());
 app.use(express.json());
 app.use(displayRequest);
+app.use("/images", express.static("images"));
 
 // rout group
 app.use("/api/auth", authRouter);

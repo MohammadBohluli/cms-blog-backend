@@ -10,4 +10,5 @@ export default {
     port: 587,
     secure: false,
   },
+  staticAddress: "http://localhost:3000/images/",
 };

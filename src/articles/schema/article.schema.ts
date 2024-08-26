@@ -2,7 +2,7 @@ import z from "zod";
 import { ArticleStatus } from "../../types/article.types";
 
 export const createArticleSchema = z.object({
-  body: z.strictObject({
+  body: z.object({
     title: z
       .string({ required_error: "title is required" })
       .min(5, { message: "title must be more than 3 characters" })

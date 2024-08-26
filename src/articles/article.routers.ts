@@ -1,6 +1,12 @@
 import { Router } from "express";
+import {
+  authenticated,
+  isExistImage,
+  isOwn,
+  validateSchema,
+} from "../middlewares";
+import { multerConfig } from "../utils";
 import articleController from "./article.controllers";
-import { authenticated, isOwn, validateSchema } from "../middlewares";
 import {
   createArticleSchema,
   updateArticleSchema,
@@ -16,13 +22,24 @@ router.get("/:articleSlug", articleController.getHandler);
 
 router.post(
   "/",
-  [authenticated, validateSchema(createArticleSchema)],
+  [
+    authenticated,
+    multerConfig.single("image"),
+    isExistImage,
+    validateSchema(createArticleSchema),
+  ],
   articleController.createHandler
 );
 
 router.put(
   "/:articleSlug",
-  [authenticated, isOwn, validateSchema(updateArticleSchema)],
+  [
+    authenticated,
+    isOwn,
+    multerConfig.single("image"),
+    isExistImage,
+    validateSchema(updateArticleSchema),
+  ],
   articleController.updateHandler
 );
 

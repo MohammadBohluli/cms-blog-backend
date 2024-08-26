@@ -52,6 +52,9 @@ export class ArticleSchema extends TimeStamps {
   @prop({ required: true, minlength: 50 })
   public content!: string;
 
+  @prop({ required: true })
+  public image!: string;
+
   // virtual methods
   public get articleId() {
     return this._id.toHexString();

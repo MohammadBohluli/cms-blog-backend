@@ -6,3 +6,5 @@ export { default as logger } from "./logger.utils";
 export { default as sendMail } from "./mailer.utils";
 export { default as paginate } from "./paginate.utils";
 export { default as slugy } from "./slugy.utils";
+export { default as UploadImage } from "./upload.utils";
+export { default as multerConfig } from "./multerConfig.utils";

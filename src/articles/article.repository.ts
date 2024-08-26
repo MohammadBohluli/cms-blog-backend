@@ -9,6 +9,7 @@ import {
   QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
+import config from "config";
 
 class ArticleRepo {
   public async getAll(query: QueryArticlesSchema) {
@@ -83,7 +84,8 @@ class ArticleRepo {
 
   public async create(
     userId: string,
-    article: CreateArticleSchema
+    article: CreateArticleSchema,
+    articelImageUrl: string
   ): Promise<ArticleDocument> {
     const categoryList = await categoryServices.isExistCategory(
       article.categories
@@ -95,13 +97,15 @@ class ArticleRepo {
       title: article.title,
       status: article.status,
       content: article.content,
+      image: config.get("staticAddress") + articelImageUrl,
     });
     return createdArticle;
   }
 
   public async updateBySlug(
     articleSlug: string,
-    article: UpdateArticleSchema["body"]
+    article: UpdateArticleSchema["body"],
+    articelImageUrl: string
   ): Promise<ArticleDocument> {
     const categoryList = await categoryServices.isExistCategory(
       article.categories
@@ -114,6 +118,7 @@ class ArticleRepo {
         status: article.status,
         categories: categoryList,
         content: article.content,
+        image: config.get("staticAddress") + articelImageUrl,
       }
     );
 

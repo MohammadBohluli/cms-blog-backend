@@ -1,4 +1,5 @@
 import { ArticleDocument } from "../types/article.types";
+import { UploadImage } from "../utils";
 import articleMapper from "./article.mapper";
 import articleRepo from "./article.repository";
 import {
@@ -26,16 +27,31 @@ class ArticleServices {
 
   public async createArticle(
     userId: string,
-    article: CreateArticleSchema
-  ): Promise<ArticleDocument> {
-    return await articleRepo.create(userId, article);
+    article: CreateArticleSchema,
+    image: Express.Multer.File
+  ) {
+    if (image) {
+      const upload = new UploadImage(image);
+      await articleRepo.create(userId, article, upload.uniqImageName);
+      upload.saveToStorage();
+    }
   }
 
   public async updateArticle(
     articleSlug: string,
-    article: UpdateArticleSchema["body"]
-  ): Promise<void> {
-    await articleRepo.updateBySlug(articleSlug, article);
+    article: UpdateArticleSchema["body"],
+    image: Express.Multer.File
+  ) {
+    if (image) {
+      const upload = new UploadImage(image);
+
+      const updatedArticle = await articleRepo.updateBySlug(
+        articleSlug,
+        article,
+        upload.uniqImageName
+      );
+      upload.updateFromStorage(updatedArticle.image);
+    }
   }
 
   public async deleteArticle(articleSlug: string): Promise<void> {

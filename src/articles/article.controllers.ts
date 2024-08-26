@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import authServices from "../auth/auth.services";
 import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
+import { isDefined, UploadImage } from "../utils";
 import articleServices from "./article.services";
 import {
   CreateArticleSchema,
@@ -77,10 +78,12 @@ class ArticleController {
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
+    const user = authServices.checkUserUndefined(req.user);
     try {
-      const user = authServices.checkUserUndefined(req.user);
-
-      await articleServices.createArticle(user.userId, req.body);
+      if (isDefined(req.file)) {
+        const imageFile = req.file;
+        await articleServices.createArticle(user.userId, req.body, imageFile);
+      }
 
       res.status(201).json({
         success: true,
@@ -114,7 +117,10 @@ class ArticleController {
     const { articleSlug } = req.params;
 
     try {
-      await articleServices.updateArticle(articleSlug, req.body);
+      if (isDefined(req.file)) {
+        const imageFile = req.file;
+        await articleServices.updateArticle(articleSlug, req.body, imageFile);
+      }
 
       res.status(200).json({
         success: true,
