@@ -63,6 +63,9 @@ export class UserSchema extends TimeStamps {
   @prop({ type: () => ResetCode })
   public passwordResetCode!: ResetCode;
 
+  @prop()
+  public avatar?: string;
+
   // virtual methods
   public get userId() {
     return this._id.toHexString();

@@ -13,11 +13,7 @@ class UploadImage {
   }
 
   private normalaizeImgUrl() {
-    return new Date().toISOString() + "-" + this.file.originalname;
-  }
-
-  private deNormalaizeImgUrl(imgUrl: string) {
-    return imgUrl.split("/images/")[1];
+    return crypto.randomUUID().split("-")[0] + "-" + this.file.originalname;
   }
 
   private generateImgPath() {
@@ -31,19 +27,15 @@ class UploadImage {
     });
   }
 
-  public deleteFromStorage(imageUrl: string) {
-    fs.unlink(
-      path.join(__dirname, "../../images", this.deNormalaizeImgUrl(imageUrl)),
-      (error) => {
-        if (error) logger.error(error.message);
+  public static deleteFromStorage(imageUrl: string) {
+    const imgPath = imageUrl ? imageUrl.split("/images/")[1] : "";
+    fs.unlink(path.join(__dirname, "../../images", imgPath), (error) => {
+      if (error) {
+        logger.error(error.message);
+      } else {
         logger.info("✅ image successfully deleted.");
       }
-    );
-  }
-
-  public updateFromStorage(imageUrl: string) {
-    this.deleteFromStorage(imageUrl);
-    this.saveToStorage();
+    });
   }
 }
 

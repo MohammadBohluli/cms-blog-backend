@@ -1,6 +1,7 @@
 import multer from "multer";
 import { InvalidError } from "../errors";
 
+// TODO: add limit size upload file
 const multerConfig = multer({
   storage: multer.memoryStorage(),
   fileFilter(req, file, cb) {

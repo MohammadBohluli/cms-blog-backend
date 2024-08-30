@@ -8,6 +8,7 @@ class AuthMapper {
       lastName: userDocument.lastName,
       email: userDocument.email,
       role: userDocument.role,
+      avatar: userDocument.avatar,
       createdAt: userDocument.createdAt,
       updatedAt: userDocument.updatedAt,
     };

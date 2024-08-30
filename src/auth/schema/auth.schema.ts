@@ -47,7 +47,7 @@ export const registerSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
-  body: z.strictObject({
+  body: z.object({
     firstName: z
       .string({
         required_error: "firstName field is required",

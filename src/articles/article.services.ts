@@ -50,7 +50,8 @@ class ArticleServices {
         article,
         upload.uniqImageName
       );
-      upload.updateFromStorage(updatedArticle.image);
+      UploadImage.deleteFromStorage(updatedArticle.image);
+      upload.saveToStorage();
     }
   }
 

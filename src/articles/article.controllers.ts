@@ -80,7 +80,7 @@ class ArticleController {
   ) {
     const user = authServices.checkUserUndefined(req.user);
     try {
-      if (isDefined(req.file)) {
+      if (req.file) {
         const imageFile = req.file;
         await articleServices.createArticle(user.userId, req.body, imageFile);
       }
@@ -117,7 +117,7 @@ class ArticleController {
     const { articleSlug } = req.params;
 
     try {
-      if (isDefined(req.file)) {
+      if (req.file) {
         const imageFile = req.file;
         await articleServices.updateArticle(articleSlug, req.body, imageFile);
       }
@@ -128,6 +128,16 @@ class ArticleController {
         message: "Successfull updated article.",
       });
     } catch (error) {
+      if (
+        error instanceof mongoose.mongo.MongoServerError &&
+        error.code === 11000
+      ) {
+        return next(
+          new ExistObjectError(
+            "Article already exist with title, please change your title."
+          )
+        );
+      }
       next(error);
     }
   }

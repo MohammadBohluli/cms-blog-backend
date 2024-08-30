@@ -10,6 +10,7 @@ import {
   updateUserSchema,
   verifyUserSchema,
 } from "./schema/auth.schema";
+import { multerConfig } from "../utils";
 
 const router = Router();
 
@@ -17,7 +18,7 @@ router.post("/login", validateSchema(loginSchema), authController.loginHandler);
 
 router.post(
   "/register",
-  validateSchema(registerSchema),
+  [multerConfig.single("avatar"), validateSchema(registerSchema)],
   authController.RegisterHandler
 );
 
@@ -49,7 +50,11 @@ router.post("/me", authenticated, authController.profileHandler);
 
 router.patch(
   "/me",
-  [authenticated, validateSchema(updateUserSchema)],
+  [
+    authenticated,
+    multerConfig.single("avatar"),
+    validateSchema(updateUserSchema),
+  ],
   authController.updateUserHandler
 );
 

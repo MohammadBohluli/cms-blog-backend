@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import { ExistObjectError, InvalidError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
+import { UploadImage } from "../utils";
 import authMapper from "./auth.mapper";
 import authRepo from "./auth.repository";
 import authServices from "./auth.services";
@@ -15,6 +16,7 @@ import {
   VerifyUserSchema,
 } from "./schema/auth.schema";
 
+// TODO: create services for register,update,delete account user
 class AuthController {
   public async loginHandler(
     req: Request<{}, {}, LoginSchema>,
@@ -52,9 +54,16 @@ class AuthController {
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
-    try {
-      const user = await authRepo.createUser(req.body);
+    const avatarFile = req.file;
 
+    try {
+      if (avatarFile) {
+        const upload = new UploadImage(avatarFile);
+        const user = await authRepo.createUser(req.body, upload.uniqImageName);
+        upload.saveToStorage();
+        await authServices.sendVerificationCode(user);
+      }
+      const user = await authRepo.createUser(req.body);
       await authServices.sendVerificationCode(user);
 
       return res.status(201).json({
@@ -98,10 +107,31 @@ class AuthController {
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
+    const avatarFile = req.file;
+    const user = authServices.checkUserUndefined(req.user);
     try {
-      const user = authServices.checkUserUndefined(req.user);
+      if (avatarFile) {
+        const upload = new UploadImage(avatarFile);
+        const updatedUser = await authRepo.updateUserById(
+          user.userId,
+          req.body,
+          upload.uniqImageName
+        );
 
-      await authRepo.updateUserById(user.id, req.body);
+        if (updatedUser.avatar || updatedUser.avatar === null) {
+          UploadImage.deleteFromStorage(updatedUser.avatar);
+          upload.saveToStorage();
+        }
+      } else {
+        const updatedUser = await authRepo.updateUserById(
+          user.userId,
+          req.body
+        );
+
+        if (updatedUser.avatar) {
+          UploadImage.deleteFromStorage(updatedUser.avatar);
+        }
+      }
 
       res.status(200).json({
         success: true,
