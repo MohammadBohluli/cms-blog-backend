@@ -1,12 +1,14 @@
-import config from "config";
 import mongoose from "mongoose";
 import { logger } from ".";
+import appConfig from "../../config";
 
 const connectToDb = async function () {
-  const DB_URI = config.get<string>("dbURI");
+  const { MONGO_HOSTNAME, MONGO_PORT, MONGO_DB } = appConfig.database;
 
   try {
-    await mongoose.connect(DB_URI);
+    await mongoose.connect(
+      `mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB}`
+    );
     logger.info("✅ Connected to MongoDB");
   } catch (err) {
     console.log(err);
