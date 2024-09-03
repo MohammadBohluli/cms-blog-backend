@@ -1,15 +1,13 @@
-import config from "config";
 import nodemailer, { SendMailOptions } from "nodemailer";
 import { logger } from ".";
-import Smtp from "../types/smtp.types";
-
-const smtp = config.get<Smtp>("smtp");
 
 const transporter = nodemailer.createTransport({
-  ...smtp,
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false,
   auth: {
-    user: smtp.user,
-    pass: smtp.password,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 

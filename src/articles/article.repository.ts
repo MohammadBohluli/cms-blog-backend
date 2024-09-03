@@ -9,7 +9,6 @@ import {
   QueryArticlesSchema,
   UpdateArticleSchema,
 } from "./schema/article.schema";
-import config from "config";
 
 class ArticleRepo {
   public async getAll(query: QueryArticlesSchema) {
@@ -97,7 +96,7 @@ class ArticleRepo {
       title: article.title,
       status: article.status,
       content: article.content,
-      image: config.get("staticAddress") + articelImageUrl,
+      image: process.env.STATIC_FILE_ADDRESS + articelImageUrl,
     });
     return createdArticle;
   }
@@ -118,7 +117,7 @@ class ArticleRepo {
         status: article.status,
         categories: categoryList,
         content: article.content,
-        image: config.get("staticAddress") + articelImageUrl,
+        image: process.env.STATIC_FILE_ADDRESS + articelImageUrl,
       }
     );
 

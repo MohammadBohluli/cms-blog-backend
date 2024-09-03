@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import config from "config";
 import jwt from "jsonwebtoken";
 import {
   ExistObjectError,
@@ -98,7 +97,7 @@ class AuthServices {
 
   public createAccessToken(userId: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      const signingKey = config.get<string>("accessTokenSecretKey");
+      const signingKey = process.env.ACCESS_TOKEN_SECRET_KEY;
       const payload: object = {
         id: userId,
       };
@@ -121,7 +120,7 @@ class AuthServices {
 
   public createRefreshToken(userId: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      const signingKey = config.get<string>("refreshTokenSecretKey");
+      const signingKey = process.env.REFRESH_TOKEN_SECRET_KEY;
       const payload: object = {
         id: userId,
       };
@@ -144,7 +143,7 @@ class AuthServices {
 
   public verifyAccessToken(token: string): Promise<{ id: string }> {
     return new Promise((resolve, reject) => {
-      const signingKey = config.get<string>("accessTokenSecretKey");
+      const signingKey = process.env.ACCESS_TOKEN_SECRET_KEY;
 
       return jwt.verify(token, signingKey, (error, payload) => {
         if (error) {
@@ -166,7 +165,7 @@ class AuthServices {
 
   public verifyRefreshToken(token: string): Promise<{ id: string }> {
     return new Promise((resolve, reject) => {
-      const signingKey = config.get<string>("refreshTokenSecretKey");
+      const signingKey = process.env.REFRESH_TOKEN_SECRET_KEY;
 
       return jwt.verify(token, signingKey, (error, payload) => {
         if (error) {

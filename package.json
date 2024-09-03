@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "APP_ENV=development nodemon --watch 'src/**/*.ts' --exec ts-node src/server.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/server.ts",
     "build": "tsc"
   },
   "keywords": [],
@@ -12,7 +12,6 @@
   "description": "",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/config": "^3.3.4",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/lodash": "^4.17.7",
@@ -27,7 +26,6 @@
     "@types/cors": "^2.8.17",
     "@types/nodemailer": "^6.4.15",
     "bcrypt": "^5.1.1",
-    "config": "^3.3.12",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

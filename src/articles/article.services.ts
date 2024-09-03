@@ -1,4 +1,3 @@
-import { ArticleDocument } from "../types/article.types";
 import { UploadImage } from "../utils";
 import articleMapper from "./article.mapper";
 import articleRepo from "./article.repository";

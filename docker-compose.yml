@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: mongo:7.0.14-jammy
+    container_name: mongodb
+    restart: always
+    volumes:
+      - dbdata:/data/db
+
+  nodejs:
+    build:
+      context: .
+      dockerfile: DockerFiles/nodejs.DockerFile
+    container_name: nodejs
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app/cms-blog-backend
+    depends_on:
+      - mongodb
+    env_file:
+      - ./envs/development.env
+
+volumes:
+  dbdata:

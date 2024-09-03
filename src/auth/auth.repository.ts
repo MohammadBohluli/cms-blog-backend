@@ -2,7 +2,6 @@ import { NotFoundError } from "../errors";
 import { UserModel } from "../models/user.model";
 import { UserDocument } from "../types/user.types";
 import { RegisterSchema, UpdateUserSchema } from "./schema/auth.schema";
-import config from "config";
 
 class AuthRepo {
   public async getUserByEmail(email: string): Promise<UserDocument> {
@@ -30,7 +29,7 @@ class AuthRepo {
       password: user.password,
       passwordResetCode: { code: null, expireAt: null },
       verificationCode: { code: null, expireAt: null },
-      avatar: avatarUrl ? config.get("staticAddress") + avatarUrl : null,
+      avatar: avatarUrl ? process.env.STATIC_FILE_ADDRESS + avatarUrl : null,
     });
     return createdUser;
   }
@@ -43,7 +42,7 @@ class AuthRepo {
     const updatedUser = await UserModel.findByIdAndUpdate(userId, {
       firstName: updateField.firstName,
       lastName: updateField.lastName,
-      avatar: avatarUrl ? config.get("staticAddress") + avatarUrl : null,
+      avatar: avatarUrl ? process.env.STATIC_FILE_ADDRESS + avatarUrl : null,
     });
 
     if (!updatedUser) throw new NotFoundError("Somthing wrong in update.");

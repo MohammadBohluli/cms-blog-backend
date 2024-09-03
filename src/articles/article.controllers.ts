@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import authServices from "../auth/auth.services";
 import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
-import { isDefined, UploadImage } from "../utils";
 import articleServices from "./article.services";
 import {
   CreateArticleSchema,
