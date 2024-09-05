@@ -6,9 +6,8 @@ export type Pagination = {
 };
 
 type ResponseJson = {
-  success: boolean;
   statusCode: number;
-  message?: string;
+  message?: string | string[];
   data?: Array<object> | object;
   pagination?: Pagination;
 };

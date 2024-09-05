@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
-import { ExistObjectError, InvalidError } from "../errors";
+import { InvalidError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
-import { UploadImage } from "../utils";
+import { HttpStatusCode } from "../utils";
 import authMapper from "./auth.mapper";
 import authRepo from "./auth.repository";
 import authServices from "./auth.services";
@@ -16,7 +15,6 @@ import {
   VerifyUserSchema,
 } from "./schema/auth.schema";
 
-// TODO: create services for register,update,delete account user
 class AuthController {
   public async loginHandler(
     req: Request<{}, {}, LoginSchema>,
@@ -26,19 +24,23 @@ class AuthController {
     const { email, password } = req.body;
 
     try {
-      const user = await authRepo.getUserByEmail(email);
+      const { accessToken, refreshToken } = await authServices.login(
+        email,
+        password
+      );
 
-      await authServices.sendVerificationCode(user);
+      res
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          maxAge: process.env.REFRESH_TOKEN_LIFETIME,
+        })
+        .cookie("accessToken", accessToken, {
+          httpOnly: true,
+          maxAge: process.env.ACCESS_TOKEN_LIFETIME,
+        });
 
-      await authServices.validatePassowrd(password, user);
-
-      const accessToken = await authServices.createAccessToken(user.userId);
-      const refreshToken = await authServices.createRefreshToken(user.userId);
-
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
-
+      res.status(200).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         data: {
           accessToken: accessToken,
           refreshToken: refreshToken,
@@ -54,32 +56,16 @@ class AuthController {
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
-    const avatarFile = req.file;
+    const avatarFile = req.file ? req.file : undefined;
 
     try {
-      if (avatarFile) {
-        const upload = new UploadImage(avatarFile);
-        const user = await authRepo.createUser(req.body, upload.uniqImageName);
-        upload.saveToStorage();
-        await authServices.sendVerificationCode(user);
-      }
-      const user = await authRepo.createUser(req.body);
-      await authServices.sendVerificationCode(user);
+      await authServices.register(req.body, avatarFile);
 
-      return res.status(201).json({
-        success: true,
-        statusCode: 201,
+      return res.status(HttpStatusCode.SUCCESS_CREATED).json({
+        statusCode: HttpStatusCode.SUCCESS_CREATED,
         message: "Verification code sent to email",
       });
     } catch (error) {
-      if (
-        error instanceof mongoose.mongo.MongoServerError &&
-        error.code === 11000
-      ) {
-        return next(
-          new ExistObjectError("َUser already exist with this email.")
-        );
-      }
       next(error);
     }
   }
@@ -92,9 +78,8 @@ class AuthController {
     try {
       const user = authServices.checkUserUndefined(req.user);
 
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
+      return res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         data: authMapper.toDispaly(user),
       });
     } catch (error) {
@@ -109,33 +94,12 @@ class AuthController {
   ) {
     const avatarFile = req.file;
     const user = authServices.checkUserUndefined(req.user);
+
     try {
-      if (avatarFile) {
-        const upload = new UploadImage(avatarFile);
-        const updatedUser = await authRepo.updateUserById(
-          user.userId,
-          req.body,
-          upload.uniqImageName
-        );
+      await authServices.update(user.userId, req.body, avatarFile);
 
-        if (updatedUser.avatar || updatedUser.avatar === null) {
-          UploadImage.deleteFromStorage(updatedUser.avatar);
-          upload.saveToStorage();
-        }
-      } else {
-        const updatedUser = await authRepo.updateUserById(
-          user.userId,
-          req.body
-        );
-
-        if (updatedUser.avatar) {
-          UploadImage.deleteFromStorage(updatedUser.avatar);
-        }
-      }
-
-      res.status(200).json({
-        success: true,
-        statusCode: 200,
+      res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Your profile is updated.",
       });
     } catch (error) {
@@ -150,12 +114,10 @@ class AuthController {
   ) {
     try {
       const user = authServices.checkUserUndefined(req.user);
+      await authServices.delete(user.userId);
 
-      await authRepo.deleteUserById(user.id);
-
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
+      return res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Your account is deleted.",
       });
     } catch (error) {
@@ -177,9 +139,8 @@ class AuthController {
 
       const isVerifiedUser = await authServices.isVerified(verifyCode, user);
       if (isVerifiedUser) {
-        return res.status(200).json({
-          success: true,
-          statusCode: 200,
+        return res.status(HttpStatusCode.SUCCESS_OK).json({
+          statusCode: HttpStatusCode.SUCCESS_OK,
           message: "Your account succussfully verified.",
         });
       }
@@ -200,9 +161,8 @@ class AuthController {
 
       await authServices.sendForgotPasswordCode(user);
 
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
+      return res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Forgot password link sent to email.",
       });
     } catch (err) {
@@ -229,9 +189,8 @@ class AuthController {
 
       await authServices.resetPassword(user, passwordResetCode, password);
 
-      return res.status(200).json({
-        success: true,
-        statusCode: 200,
+      return res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Your password successfully changed.",
       });
     } catch (err) {
@@ -254,9 +213,18 @@ class AuthController {
 
       const accessToken = await authServices.createAccessToken(id);
 
+      res
+        .cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          maxAge: process.env.REFRESH_TOKEN_LIFETIME,
+        })
+        .cookie("accessToken", accessToken, {
+          httpOnly: true,
+          maxAge: process.env.ACCESS_TOKEN_LIFETIME,
+        });
+
       res.json({
-        success: true,
-        statusCode: 200,
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Refresh token is created.",
         data: { accessToken: accessToken },
       });

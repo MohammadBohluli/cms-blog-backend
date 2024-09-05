@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticated, validateSchema } from "../middlewares";
+import { multerConfig } from "../utils";
 import authController from "./auth.controllers";
 import {
   forgotPasswordSchema,
@@ -10,7 +11,6 @@ import {
   updateUserSchema,
   verifyUserSchema,
 } from "./schema/auth.schema";
-import { multerConfig } from "../utils";
 
 const router = Router();
 

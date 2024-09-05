@@ -25,7 +25,6 @@ class ArticleController {
       );
 
       res.status(200).json({
-        success: true,
         statusCode: 200,
         data: articleList,
         pagination: {
@@ -50,7 +49,7 @@ class ArticleController {
 
     try {
       const articles = await articleServices.getUserArticles(userId);
-      res.status(200).json({ success: true, statusCode: 200, data: articles });
+      res.status(200).json({ statusCode: 200, data: articles });
     } catch (error) {
       next(error);
     }
@@ -66,7 +65,7 @@ class ArticleController {
 
     try {
       const article = await articleServices.getArticle(articleSlug);
-      res.status(200).json({ success: true, statusCode: 200, data: article });
+      res.status(200).json({ statusCode: 200, data: article });
     } catch (error) {
       next(error);
     }
@@ -85,7 +84,6 @@ class ArticleController {
       }
 
       res.status(201).json({
-        success: true,
         statusCode: 201,
         message: "Successfull created article.",
       });
@@ -122,7 +120,6 @@ class ArticleController {
       }
 
       res.status(200).json({
-        success: true,
         statusCode: 200,
         message: "Successfull updated article.",
       });
@@ -150,7 +147,6 @@ class ArticleController {
     try {
       await articleServices.deleteArticle(articleSlug);
       res.status(201).json({
-        success: true,
         statusCode: 201,
         message: "Successfull deleted article.",
       });

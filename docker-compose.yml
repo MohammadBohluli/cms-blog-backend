@@ -3,6 +3,8 @@ services:
     image: mongo:7.0.14-jammy
     container_name: mongodb
     restart: always
+    ports:
+      - 3001:27017
     volumes:
       - dbdata:/data/db
 

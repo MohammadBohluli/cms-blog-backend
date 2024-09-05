@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodSchema } from "zod";
+import ResponseJson from "../types/responseJson.types";
 
 const validateSchema =
-  (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodSchema) =>
+  (req: Request, res: Response<ResponseJson>, next: NextFunction) => {
     const { success, error } = schema.safeParse({
       body: req.body,
       params: req.params,
@@ -23,7 +25,7 @@ const validateSchema =
     if (!success) {
       return res.status(400).json({
         statusCode: 400,
-        clientErrors: error.errors.map((field) => field.message),
+        message: error.errors.map((field) => field.message),
       });
     }
 

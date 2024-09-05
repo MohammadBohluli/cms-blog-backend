@@ -18,9 +18,7 @@ class CategoryController {
   ) {
     try {
       const categories = await categoryServices.getAllCategory();
-      res
-        .status(200)
-        .json({ success: true, statusCode: 200, data: categories });
+      res.status(200).json({ statusCode: 200, data: categories });
     } catch (error) {
       next(error);
     }
@@ -35,7 +33,7 @@ class CategoryController {
     try {
       const category = await categoryServices.getCategory(categorySlug);
 
-      res.status(200).json({ success: true, statusCode: 200, data: category });
+      res.status(200).json({ statusCode: 200, data: category });
     } catch (error) {
       next(error);
     }
@@ -50,7 +48,6 @@ class CategoryController {
     try {
       await categoryServices.createCategory(title);
       res.status(201).json({
-        success: true,
         statusCode: 201,
         message: "Successfully created Category",
       });
@@ -79,7 +76,6 @@ class CategoryController {
     try {
       await categoryServices.updateCategory(categorySlug, req.body);
       res.status(200).json({
-        success: true,
         statusCode: 200,
         message: "Successfully update.",
       });
@@ -103,7 +99,6 @@ class CategoryController {
     try {
       await categoryServices.deleteCategory(categorySlug);
       res.status(200).json({
-        success: true,
         statusCode: 200,
         message: "Successfully deleted category",
       });

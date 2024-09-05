@@ -9,7 +9,7 @@ export const loginSchema = z.object({
       .string({
         required_error: "Password field is required",
       })
-      .min(8, "Password must be more than 6 characters"),
+      .min(8, "Password must be more than 8 characters"),
   }),
 });
 
@@ -33,12 +33,12 @@ export const registerSchema = z.object({
         .string({
           required_error: "Password field is required",
         })
-        .min(6, "Password must be more than 6 characters"),
+        .min(8, "Password must be more than 8 characters"),
       passwordConfirm: z
         .string({
           required_error: "passwordConfirm field is required",
         })
-        .min(6, "passwordConfirm must be more than 6 characters"),
+        .min(8, "passwordConfirm must be more than 8 characters"),
     })
     .refine(({ password, passwordConfirm }) => password === passwordConfirm, {
       message: "The passwords does not match",
@@ -65,12 +65,8 @@ export const updateUserSchema = z.object({
 
 export const verifyUserSchema = z.object({
   params: z.strictObject({
-    id: z.string({
-      required_error: "Id field is required",
-    }),
-    verifyCode: z.string({
-      required_error: "verificationCode field is required",
-    }),
+    id: z.string(),
+    verifyCode: z.string(),
   }),
 });
 
@@ -84,12 +80,8 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z.object({
   params: z.strictObject({
-    id: z.string({
-      required_error: "Id field is required",
-    }),
-    passwordResetCode: z.string({
-      required_error: "PassowrdResetCode field is required",
-    }),
+    id: z.string(),
+    passwordResetCode: z.string(),
   }),
   body: z
     .strictObject({

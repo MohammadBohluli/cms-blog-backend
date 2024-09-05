@@ -49,9 +49,11 @@ class AuthRepo {
     return updatedUser;
   }
 
-  public async deleteUserById(userId: string): Promise<void> {
+  public async deleteUserById(userId: string) {
     const user = await UserModel.findByIdAndDelete(userId);
     if (!user) throw new NotFoundError("User not found.");
+
+    return user;
   }
 }
 

@@ -6,9 +6,7 @@ const displayRequest = function (
   res: Response,
   next: NextFunction
 ) {
-  logger.info(
-    `${req.method}  ${req.url}  HTTP/${req.httpVersion}  ${res.statusCode}`
-  );
+  logger.info(`${req.method}  ${req.url}  HTTP/${req.httpVersion}`);
 
   next();
 };

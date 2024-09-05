@@ -12,6 +12,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       // Server
+      NODE_ENV: string;
       PORT: number;
       STATIC_FILE_ADDRESS: string;
       // Database
@@ -26,8 +27,8 @@ declare global {
       // Tokens
       ACCESS_TOKEN_SECRET_KEY: string;
       REFRESH_TOKEN_SECRET_KEY: string;
-      ACCESS_TOKEN_LIFETIME: string;
-      REFRESH_TOKEN_LIFETIME: string;
+      ACCESS_TOKEN_LIFETIME: number;
+      REFRESH_TOKEN_LIFETIME: number;
     }
   }
 }
