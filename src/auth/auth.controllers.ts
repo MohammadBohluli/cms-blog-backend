@@ -6,6 +6,7 @@ import authMapper from "./auth.mapper";
 import authRepo from "./auth.repository";
 import authServices from "./auth.services";
 import {
+  ChangePasswordSchema,
   ForgotPasswordSchema,
   LoginSchema,
   RefreshTokenSchema,
@@ -170,6 +171,32 @@ class AuthController {
     }
   }
 
+  public async changePasswordHandler(
+    req: Request<{}, {}, ChangePasswordSchema>,
+    res: Response<ResponseJson>,
+    next: NextFunction
+  ) {
+    const { password, currentPassword } = req.body;
+    const user = authServices.checkUserUndefined(req.user);
+
+    const isValid = await authServices.validatePassowrd(currentPassword, user);
+
+    try {
+      if (!isValid) {
+        throw new InvalidError("Current password is not correct");
+      }
+      user.password = password;
+      user.save();
+
+      return res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
+        message: "Your password is changed.",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   public async resetPasswordUserHandler(
     req: Request<
       ResetPasswordSchema["params"],
@@ -179,11 +206,11 @@ class AuthController {
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
-    const { id, passwordResetCode } = req.params;
+    const { userId, passwordResetCode } = req.params;
     const { password } = req.body;
 
     try {
-      const user = await authRepo.getUserById(id);
+      const user = await authRepo.getUserById(userId);
 
       authServices.isExpiredLink(user.passwordResetCode.expireAt);
 

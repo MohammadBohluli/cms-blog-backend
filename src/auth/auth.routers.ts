@@ -3,6 +3,7 @@ import { authenticated, validateSchema } from "../middlewares";
 import { multerConfig } from "../utils";
 import authController from "./auth.controllers";
 import {
+  changePasswordSchema,
   forgotPasswordSchema,
   loginSchema,
   refreshTokenSchema,
@@ -26,6 +27,12 @@ router.post(
   "/verify/:id/:verifyCode",
   validateSchema(verifyUserSchema),
   authController.verifyUserHandler
+);
+
+router.post(
+  "/changePassword",
+  [authenticated, validateSchema(changePasswordSchema)],
+  authController.changePasswordHandler
 );
 
 router.post(

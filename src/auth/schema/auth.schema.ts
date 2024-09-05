@@ -78,9 +78,32 @@ export const forgotPasswordSchema = z.object({
   }),
 });
 
+export const changePasswordSchema = z.object({
+  body: z
+    .strictObject({
+      currentPassword: z.string({
+        required_error: "Current password field is required",
+      }),
+      password: z
+        .string({
+          required_error: "Password field is required",
+        })
+        .min(8, "Password must be more than 8 characters"),
+      passwordConfirm: z
+        .string({
+          required_error: "passwordConfirm field is required",
+        })
+        .min(8, "passwordConfirm must be more than 8 characters"),
+    })
+    .refine(({ password, passwordConfirm }) => password === passwordConfirm, {
+      message: "The passwords did not match",
+      path: ["passwordConfirm"],
+    }),
+});
+
 export const resetPasswordSchema = z.object({
   params: z.strictObject({
-    id: z.string(),
+    userId: z.string(),
     passwordResetCode: z.string(),
   }),
   body: z
@@ -89,12 +112,12 @@ export const resetPasswordSchema = z.object({
         .string({
           required_error: "Password field is required",
         })
-        .min(6, "Password must be more than 6 characters"),
+        .min(8, "Password must be more than 8 characters"),
       passwordConfirm: z
         .string({
           required_error: "passwordConfirm field is required",
         })
-        .min(6, "passwordConfirm must be more than 6 characters"),
+        .min(8, "passwordConfirm must be more than 8 characters"),
     })
     .refine(({ password, passwordConfirm }) => password === passwordConfirm, {
       message: "The passwords did not match",
@@ -113,5 +136,6 @@ export type RegisterSchema = z.infer<typeof registerSchema>["body"];
 export type UpdateUserSchema = z.infer<typeof updateUserSchema>["body"];
 export type VerifyUserSchema = z.infer<typeof verifyUserSchema>["params"];
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>["body"];
+export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>["body"];
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 export type RefreshTokenSchema = z.infer<typeof refreshTokenSchema>["body"];

@@ -27,7 +27,10 @@ class AuthServices {
       );
     }
 
-    await this.validatePassowrd(password, user);
+    const isValid = await this.validatePassowrd(password, user);
+    if (!isValid) {
+      throw new InvalidError("Invalid password");
+    }
 
     const accessToken = await this.createAccessToken(user.userId);
     const refreshToken = await this.createRefreshToken(user.userId);
@@ -155,7 +158,10 @@ class AuthServices {
 
   public async validatePassowrd(password: string, user: UserDocument) {
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new InvalidError("Invalid password.");
+    if (!isValid) {
+      return false;
+    }
+    return true;
   }
 
   public createAccessToken(userId: string): Promise<string> {
