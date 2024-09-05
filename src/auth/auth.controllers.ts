@@ -158,9 +158,7 @@ class AuthController {
     const { email } = req.body;
 
     try {
-      const user = await authRepo.getUserByEmail(email);
-
-      await authServices.sendForgotPasswordCode(user);
+      await authServices.forgotPassword(email);
 
       return res.status(HttpStatusCode.SUCCESS_OK).json({
         statusCode: HttpStatusCode.SUCCESS_OK,
@@ -179,14 +177,8 @@ class AuthController {
     const { password, currentPassword } = req.body;
     const user = authServices.checkUserUndefined(req.user);
 
-    const isValid = await authServices.validatePassowrd(currentPassword, user);
-
     try {
-      if (!isValid) {
-        throw new InvalidError("Current password is not correct");
-      }
-      user.password = password;
-      user.save();
+      await authServices.changePassword(user, currentPassword, password);
 
       return res.status(HttpStatusCode.SUCCESS_OK).json({
         statusCode: HttpStatusCode.SUCCESS_OK,
@@ -210,11 +202,7 @@ class AuthController {
     const { password } = req.body;
 
     try {
-      const user = await authRepo.getUserById(userId);
-
-      authServices.isExpiredLink(user.passwordResetCode.expireAt);
-
-      await authServices.resetPassword(user, passwordResetCode, password);
+      await authServices.resetPassword(userId, passwordResetCode, password);
 
       return res.status(HttpStatusCode.SUCCESS_OK).json({
         statusCode: HttpStatusCode.SUCCESS_OK,

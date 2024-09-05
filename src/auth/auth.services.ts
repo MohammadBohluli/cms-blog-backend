@@ -118,7 +118,9 @@ class AuthServices {
     throw new NotAuthenticatedError("Your account is not verified.");
   }
 
-  public async sendForgotPasswordCode(user: UserDocument): Promise<void> {
+  public async forgotPassword(email: string): Promise<void> {
+    const user = await authRepo.getUserByEmail(email);
+
     user.passwordResetCode.code = generateRandomCode();
     user.passwordResetCode.expireAt = generateExpireTime(10);
     user.save();
@@ -132,10 +134,14 @@ class AuthServices {
   }
 
   public async resetPassword(
-    user: UserDocument,
+    userId: string,
     passwordResetCode: string,
     password: string
   ): Promise<void> {
+    const user = await authRepo.getUserById(userId);
+
+    this.isExpiredLink(user.passwordResetCode.expireAt);
+
     if (
       !user.passwordResetCode.code ||
       user.passwordResetCode.code !== passwordResetCode
@@ -145,6 +151,20 @@ class AuthServices {
     user.password = password;
     user.passwordResetCode.code = null;
     user.passwordResetCode.expireAt = null;
+    user.save();
+  }
+
+  public async changePassword(
+    user: UserDocument,
+    currentPassword: string,
+    newPassword: string
+  ) {
+    const isValid = await this.validatePassowrd(currentPassword, user);
+
+    if (!isValid) {
+      throw new InvalidError("Current password is not correct");
+    }
+    user.password = newPassword;
     user.save();
   }
 
