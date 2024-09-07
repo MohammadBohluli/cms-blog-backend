@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
-import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
+import { HttpStatusCode } from "../utils";
 import categoryServices from "./category.services";
 import {
   CreateCategorySchema,
@@ -18,7 +17,9 @@ class CategoryController {
   ) {
     try {
       const categories = await categoryServices.getAllCategory();
-      res.status(200).json({ statusCode: 200, data: categories });
+      res
+        .status(HttpStatusCode.SUCCESS_OK)
+        .json({ statusCode: HttpStatusCode.SUCCESS_OK, data: categories });
     } catch (error) {
       next(error);
     }
@@ -33,7 +34,9 @@ class CategoryController {
     try {
       const category = await categoryServices.getCategory(categorySlug);
 
-      res.status(200).json({ statusCode: 200, data: category });
+      res
+        .status(HttpStatusCode.SUCCESS_OK)
+        .json({ statusCode: HttpStatusCode.SUCCESS_OK, data: category });
     } catch (error) {
       next(error);
     }
@@ -47,17 +50,11 @@ class CategoryController {
     const { title } = req.body;
     try {
       await categoryServices.createCategory(title);
-      res.status(201).json({
-        statusCode: 201,
+      res.status(HttpStatusCode.SUCCESS_CREATED).json({
+        statusCode: HttpStatusCode.SUCCESS_CREATED,
         message: "Successfully created Category",
       });
     } catch (error) {
-      if (
-        error instanceof mongoose.mongo.MongoServerError &&
-        error.code === 11000
-      ) {
-        return next(new ExistObjectError("Category already exist."));
-      }
       next(error);
     }
   }
@@ -75,17 +72,11 @@ class CategoryController {
 
     try {
       await categoryServices.updateCategory(categorySlug, req.body);
-      res.status(200).json({
-        statusCode: 200,
+      res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Successfully update.",
       });
     } catch (error) {
-      if (
-        error instanceof mongoose.mongo.MongoServerError &&
-        error.code === 11000
-      ) {
-        return next(new ExistObjectError("Category already exist."));
-      }
       next(error);
     }
   }
@@ -98,8 +89,8 @@ class CategoryController {
     const { categorySlug } = req.params;
     try {
       await categoryServices.deleteCategory(categorySlug);
-      res.status(200).json({
-        statusCode: 200,
+      res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Successfully deleted category",
       });
     } catch (error) {

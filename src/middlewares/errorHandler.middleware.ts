@@ -10,7 +10,7 @@ const errorHandler = function (
 ) {
   if (err instanceof mongoose.mongo.MongoServerError && err.code === 11000) {
     return res.status(409).json({
-      message: "User already exist with this email.",
+      message: "Object already exist.",
       statusCode: 409,
     });
   }
