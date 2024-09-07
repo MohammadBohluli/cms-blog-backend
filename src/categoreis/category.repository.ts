@@ -1,4 +1,3 @@
-import { title } from "process";
 import { BadRequest, NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
 import { CategoryModel } from "../models/category.model";

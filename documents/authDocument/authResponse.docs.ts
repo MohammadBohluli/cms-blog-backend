@@ -44,7 +44,7 @@
  *           properties:
  *             id:
  *               type: string
- *               example: example@gmail.com
+ *               example: 66bc679f00ef88c82874e4kh
  *             email:
  *               type: string
  *               example: example@gmail.com
