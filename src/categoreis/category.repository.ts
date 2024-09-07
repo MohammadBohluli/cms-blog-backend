@@ -1,5 +1,5 @@
 import { title } from "process";
-import { NotFoundError } from "../errors";
+import { BadRequest, NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
 import { CategoryModel } from "../models/category.model";
 import { CategoryDocument } from "../types/category.types";
@@ -63,8 +63,16 @@ class CategoryRepo {
   }
 
   public async deleteBySlug(categorySlug: string): Promise<void> {
-    // FIXME: when remove category, category not less than one
-    await ArticleModel.updateMany({}, { $pull: { categories: categorySlug } });
+    // check is exist an article with this category
+    const category = await ArticleModel.findOne({
+      categories: { $in: categorySlug },
+    });
+
+    if (category) {
+      throw new BadRequest(
+        "This category cannot be deleted. because the articles exist with this category"
+      );
+    }
 
     const deletedCategory = await CategoryModel.findOneAndDelete({
       slug: categorySlug,

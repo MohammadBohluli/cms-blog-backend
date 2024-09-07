@@ -5,3 +5,4 @@ export { default as InvalidError } from "./invalid.error";
 export { default as NotAuthenticatedError } from "./notAuthenticated.error";
 export { default as NotFoundError } from "./notFound.error";
 export { default as PermissionDeniedError } from "./permissionDenied.error";
+export { default as BadRequest } from "./badRequest.error";
