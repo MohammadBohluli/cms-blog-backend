@@ -5,21 +5,19 @@ import {
   prop,
 } from "@typegoose/typegoose";
 import { Base, TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
-import { slugy } from "../utils";
+import { logger, slugy } from "../utils";
 
 export interface CategorySchema extends Base {}
 
-@pre<CategorySchema>("validate", function (next) {
-  if (this.isModified("title")) {
+@pre<CategorySchema>("save", async function (next) {
+  if (!this.isModified("title")) return next();
+  try {
     this.slug = slugy(this.title);
-    next();
-  }
-})
-@pre<CategorySchema>("findOneAndUpdate", function (next) {
-  const title = this.get("title");
 
-  this.set("slug", slugy(title));
-  next();
+    next();
+  } catch (err) {
+    logger.error(err);
+  }
 })
 @modelOptions({ schemaOptions: { collection: "categories", id: false } })
 export class CategorySchema extends TimeStamps {

@@ -7,7 +7,7 @@ import { UpdateCategorySchema } from "./schema/category.schema";
 
 class CategoryServices {
   public async getAllCategory() {
-    const categoreis = await categoryRepo.getAllCategory();
+    const categoreis = await categoryRepo.getAll();
     return categoryMapper.toDispalyAll(categoreis);
   }
 

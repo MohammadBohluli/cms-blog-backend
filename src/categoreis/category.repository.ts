@@ -1,3 +1,4 @@
+import { title } from "process";
 import { NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
 import { CategoryModel } from "../models/category.model";
@@ -6,7 +7,7 @@ import { slugy } from "../utils";
 import { UpdateCategorySchema } from "./schema/category.schema";
 
 class CategoryRepo {
-  public async getAllCategory(): Promise<CategoryDocument[]> {
+  public async getAll(): Promise<CategoryDocument[]> {
     const categories = await CategoryModel.find();
     if (categories.length === 0) {
       throw new NotFoundError("There are no categories add yet.");
@@ -23,9 +24,12 @@ class CategoryRepo {
   }
 
   public async create(title: string): Promise<CategoryDocument> {
-    const category = await CategoryModel.create({
-      title: title,
-    });
+    const category = new CategoryModel({ title: title, slug: slugy(title) });
+    const savedCategory = category.save({ validateBeforeSave: true });
+
+    if (!(await savedCategory)) {
+      throw new Error();
+    }
 
     return category;
   }
@@ -33,26 +37,29 @@ class CategoryRepo {
   public async updateBySlug(
     categorySlug: string,
     category: UpdateCategorySchema["body"]
-  ): Promise<CategoryDocument> {
-    const updatedCategory = await CategoryModel.findOneAndUpdate(
-      {
-        slug: categorySlug,
-      },
-      { title: category.title }
-    );
+  ) {
+    const updatedCategory = await CategoryModel.findOne({
+      slug: categorySlug,
+    });
+
     if (!updatedCategory) {
       throw new NotFoundError(
         "Category not found or somthing wrong in update."
       );
     }
 
-    // update all article categories when certain category is updated
-    await ArticleModel.updateMany(
-      { categories: { $in: [categorySlug] } },
-      { $set: { "categories.$": slugy(category.title) } }
-    );
+    updatedCategory.title = category.title;
+    const savedCategory = updatedCategory.save({ validateBeforeSave: true });
 
-    return updatedCategory;
+    // if savedCategory is success => update all article categories when certain category is updated
+    if (await savedCategory) {
+      await ArticleModel.updateMany(
+        { categories: { $in: [categorySlug] } },
+        { $set: { "categories.$": slugy(category.title) } }
+      );
+    } else {
+      return savedCategory;
+    }
   }
 
   public async deleteBySlug(categorySlug: string): Promise<void> {
