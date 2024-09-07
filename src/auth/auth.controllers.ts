@@ -42,6 +42,7 @@ class AuthController {
 
       res.status(200).json({
         statusCode: HttpStatusCode.SUCCESS_OK,
+        message: "Successfully login",
         data: {
           accessToken: accessToken,
           refreshToken: refreshToken,

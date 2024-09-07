@@ -36,7 +36,7 @@ router.post(
 );
 
 router.post(
-  "/forgotPassword/",
+  "/forgotPassword",
   validateSchema(forgotPasswordSchema),
   authController.forgotPasswordUserHandler
 );
@@ -53,7 +53,7 @@ router.post(
   authController.refreshTokenHandler
 );
 
-router.post("/me", authenticated, authController.profileHandler);
+router.get("/me", authenticated, authController.profileHandler);
 
 router.patch(
   "/me",
