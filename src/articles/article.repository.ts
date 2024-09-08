@@ -2,7 +2,7 @@ import { FilterQuery } from "mongoose";
 import categoryServices from "../categoreis/category.services";
 import { NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
-import { ArticleDocument } from "../types/article.types";
+import { ArticleDocument, ArticleStatus } from "../types/article.types";
 import { paginate } from "../utils";
 import {
   CreateArticleSchema,
@@ -12,7 +12,6 @@ import {
 
 class ArticleRepo {
   public async getAll(query: QueryArticlesSchema) {
-    // TODO: refactor filters to OOP APIFilters
     const filter: FilterQuery<ArticleDocument> = {};
 
     // search title
@@ -54,6 +53,8 @@ class ArticleRepo {
     const page = parseInt(query.page) || 1;
     const limit = parseInt(query.limit) || 2;
     const offset = (page - 1) * limit;
+
+    filter.status = ArticleStatus.PUBLISHED;
     const totalItems = await ArticleModel.countDocuments(filter);
     const pagination = paginate(page, limit, totalItems);
 
@@ -67,7 +68,10 @@ class ArticleRepo {
   }
 
   public async getBySlug(articleSlug: string): Promise<ArticleDocument> {
-    const article = await ArticleModel.findOne({ slug: articleSlug });
+    const article = await ArticleModel.findOne({
+      slug: articleSlug,
+      status: ArticleStatus.PUBLISHED,
+    });
     if (!article) {
       throw new NotFoundError("Article not found");
     }

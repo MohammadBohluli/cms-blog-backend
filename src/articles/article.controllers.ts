@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import authServices from "../auth/auth.services";
 import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
+import { HttpStatusCode } from "../utils";
 import articleServices from "./article.services";
 import {
   CreateArticleSchema,
@@ -24,8 +25,8 @@ class ArticleController {
         req.query
       );
 
-      res.status(200).json({
-        statusCode: 200,
+      res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         data: articleList,
         pagination: {
           totalPages: pagination.totalPages,
@@ -41,7 +42,6 @@ class ArticleController {
 
   public async getUserArticlesHandler(
     req: Request<GetUserArticlesSchema>,
-
     res: Response<ResponseJson>,
     next: NextFunction
   ) {
@@ -49,7 +49,9 @@ class ArticleController {
 
     try {
       const articles = await articleServices.getUserArticles(userId);
-      res.status(200).json({ statusCode: 200, data: articles });
+      res
+        .status(HttpStatusCode.SUCCESS_OK)
+        .json({ statusCode: HttpStatusCode.SUCCESS_OK, data: articles });
     } catch (error) {
       next(error);
     }
@@ -65,7 +67,9 @@ class ArticleController {
 
     try {
       const article = await articleServices.getArticle(articleSlug);
-      res.status(200).json({ statusCode: 200, data: article });
+      res
+        .status(HttpStatusCode.SUCCESS_OK)
+        .json({ statusCode: HttpStatusCode.SUCCESS_OK, data: article });
     } catch (error) {
       next(error);
     }
@@ -83,8 +87,8 @@ class ArticleController {
         await articleServices.createArticle(user.userId, req.body, imageFile);
       }
 
-      res.status(201).json({
-        statusCode: 201,
+      res.status(HttpStatusCode.SUCCESS_CREATED).json({
+        statusCode: HttpStatusCode.SUCCESS_CREATED,
         message: "Successfull created article.",
       });
     } catch (error) {
@@ -119,8 +123,8 @@ class ArticleController {
         await articleServices.updateArticle(articleSlug, req.body, imageFile);
       }
 
-      res.status(200).json({
-        statusCode: 200,
+      res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Successfull updated article.",
       });
     } catch (error) {
@@ -146,8 +150,8 @@ class ArticleController {
     const { articleSlug } = req.params;
     try {
       await articleServices.deleteArticle(articleSlug);
-      res.status(201).json({
-        statusCode: 201,
+      res.status(HttpStatusCode.SUCCESS_OK).json({
+        statusCode: HttpStatusCode.SUCCESS_OK,
         message: "Successfull deleted article.",
       });
     } catch (error) {
