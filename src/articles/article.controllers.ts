@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
 import authServices from "../auth/auth.services";
-import { ExistObjectError } from "../errors";
 import ResponseJson from "../types/responseJson.types";
 import { HttpStatusCode } from "../utils";
 import articleServices from "./article.services";
@@ -92,16 +90,6 @@ class ArticleController {
         message: "Successfull created article.",
       });
     } catch (error) {
-      if (
-        error instanceof mongoose.mongo.MongoServerError &&
-        error.code === 11000
-      ) {
-        return next(
-          new ExistObjectError(
-            "Article already exist with title, please change your title."
-          )
-        );
-      }
       next(error);
     }
   }
@@ -128,16 +116,6 @@ class ArticleController {
         message: "Successfull updated article.",
       });
     } catch (error) {
-      if (
-        error instanceof mongoose.mongo.MongoServerError &&
-        error.code === 11000
-      ) {
-        return next(
-          new ExistObjectError(
-            "Article already exist with title, please change your title."
-          )
-        );
-      }
       next(error);
     }
   }

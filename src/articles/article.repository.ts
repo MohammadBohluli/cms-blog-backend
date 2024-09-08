@@ -3,7 +3,7 @@ import categoryServices from "../categoreis/category.services";
 import { NotFoundError } from "../errors";
 import { ArticleModel } from "../models/article.model";
 import { ArticleDocument, ArticleStatus } from "../types/article.types";
-import { paginate } from "../utils";
+import { paginate, slugy, UploadImage } from "../utils";
 import {
   CreateArticleSchema,
   QueryArticlesSchema,
@@ -90,52 +90,63 @@ class ArticleRepo {
     article: CreateArticleSchema,
     articelImageUrl: string
   ): Promise<ArticleDocument> {
+    // befor save article, category must be found
     const categoryList = await categoryServices.isExistCategory(
       article.categories
     );
-
-    const createdArticle = await ArticleModel.create({
+    const createdArticle = new ArticleModel({
       userId: userId,
       categories: categoryList,
       title: article.title,
       status: article.status,
       content: article.content,
+      slug: slugy(article.title),
       image: process.env.STATIC_FILE_ADDRESS + articelImageUrl,
     });
-    return createdArticle;
+
+    const savedArticle = createdArticle.save({ validateBeforeSave: true });
+
+    if (!(await savedArticle)) {
+      throw new Error();
+    }
+
+    return savedArticle;
   }
 
   public async updateBySlug(
     articleSlug: string,
     article: UpdateArticleSchema["body"],
-    articelImageUrl: string
+    articleImageUrl: string
   ): Promise<ArticleDocument> {
     const categoryList = await categoryServices.isExistCategory(
       article.categories
     );
 
-    const updatedArticle = await ArticleModel.findOneAndUpdate(
-      { slug: articleSlug },
-      {
-        title: article.title,
-        status: article.status,
-        categories: categoryList,
-        content: article.content,
-        image: process.env.STATIC_FILE_ADDRESS + articelImageUrl,
-      }
-    );
+    const updatedArticle = await this.getBySlug(articleSlug);
 
-    if (!updatedArticle) {
-      throw new NotFoundError("Article not found or somthing wrong in update.");
+    UploadImage.deleteFromStorage(updatedArticle.image);
+
+    updatedArticle.title = article.title;
+    updatedArticle.status = article.status;
+    updatedArticle.categories = categoryList;
+    updatedArticle.content = article.content;
+    updatedArticle.image = process.env.STATIC_FILE_ADDRESS + articleImageUrl;
+
+    const savedArticle = updatedArticle.save({ validateBeforeSave: true });
+
+    if (!(await savedArticle)) {
+      throw new NotFoundError("Somthing wrong in update.");
     }
-    return updatedArticle;
+    return savedArticle;
   }
 
-  public async deleteBySlug(articleSlug: string): Promise<void> {
+  public async deleteBySlug(articleSlug: string) {
     const deletedArticle = await ArticleModel.findOneAndDelete({
       slug: articleSlug,
     });
     if (!deletedArticle) throw new NotFoundError("Article not found.");
+
+    return deletedArticle;
   }
 }
 

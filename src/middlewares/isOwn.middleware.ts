@@ -9,8 +9,8 @@ const isOwn = async function (
   res: Response,
   next: NextFunction
 ) {
-  const article = await articleServices.getArticle(req.params.articleSlug);
   try {
+    const article = await articleServices.getArticle(req.params.articleSlug);
     const user = authServices.checkUserUndefined(req.user);
 
     if (user.userId != article.userId.toString()) {

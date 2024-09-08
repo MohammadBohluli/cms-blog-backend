@@ -1,6 +1,5 @@
 import _ from "lodash";
 import { NotFoundError } from "../errors";
-import { CategoryDocument } from "../types/category.types";
 import categoryMapper from "./category.mapper";
 import categoryRepo from "./category.repository";
 import { UpdateCategorySchema } from "./schema/category.schema";
@@ -31,7 +30,7 @@ class CategoryServices {
     await categoryRepo.deleteBySlug(categorySlug);
   }
 
-  public async isExistCategory(categories: string[]): Promise<string[]> {
+  public async isExistCategory(categories: string[]) {
     const categoryList = await categoryRepo.isExist(categories);
     const missMatchFields = _.difference(
       categories,
@@ -39,7 +38,8 @@ class CategoryServices {
     );
 
     if (missMatchFields.length === 0) {
-      return _.map<CategoryDocument, string>(categoryList, _.property("slug"));
+      // [{slug: javascript}] => ['javascript']
+      return categoryList.map((category) => category.slug);
     } else {
       throw new NotFoundError(`categories ${missMatchFields} not found`);
     }

@@ -8,22 +8,21 @@ import {
 } from "@typegoose/typegoose";
 import { Base, TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 import { ArticleStatus } from "../types/article.types";
-import { slugy } from "../utils";
+import { logger, slugy } from "../utils";
 import { CategorySchema } from "./category.model";
 import { UserSchema } from "./user.model";
 
 export interface ArticleSchema extends Base {}
 
-@pre<ArticleSchema>("validate", function (next) {
-  if (this.isModified("title")) {
+@pre<ArticleSchema>("save", async function (next) {
+  if (!this.isModified("title")) return next();
+  try {
     this.slug = slugy(this.title);
+
     next();
+  } catch (err) {
+    logger.error(err);
   }
-})
-@pre<ArticleSchema>("findOneAndUpdate", function (next) {
-  const title = this.get("title");
-  this.set("slug", slugy(title));
-  next();
 })
 @modelOptions({
   schemaOptions: { collection: "articles", id: false },
@@ -33,8 +32,8 @@ export class ArticleSchema extends TimeStamps {
   @prop({ required: true })
   public userId!: Ref<UserSchema>;
 
-  @prop({ required: true })
-  public categories!: Ref<CategorySchema>[];
+  @prop({ required: true, type: () => String })
+  public categories!: Ref<CategorySchema, string>[];
 
   @prop({ required: true })
   public title!: string;

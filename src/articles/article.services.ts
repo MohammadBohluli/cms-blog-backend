@@ -41,21 +41,16 @@ class ArticleServices {
     article: UpdateArticleSchema["body"],
     image: Express.Multer.File
   ) {
-    if (image) {
-      const upload = new UploadImage(image);
+    const upload = new UploadImage(image);
 
-      const updatedArticle = await articleRepo.updateBySlug(
-        articleSlug,
-        article,
-        upload.uniqImageName
-      );
-      UploadImage.deleteFromStorage(updatedArticle.image);
-      upload.saveToStorage();
-    }
+    await articleRepo.updateBySlug(articleSlug, article, upload.uniqImageName);
+
+    upload.saveToStorage();
   }
 
   public async deleteArticle(articleSlug: string): Promise<void> {
-    await articleRepo.deleteBySlug(articleSlug);
+    const deletedArticle = await articleRepo.deleteBySlug(articleSlug);
+    UploadImage.deleteFromStorage(deletedArticle.image);
   }
 }
 
