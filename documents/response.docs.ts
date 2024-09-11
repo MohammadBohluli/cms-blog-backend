@@ -21,12 +21,12 @@
  *               type: integer
  *             previousPage:
  *               type:
- *                 - string
+ *                 - integer
  *                 - 'null'
  *             currentPage:
  *               type: integer
  *             nextPage:
  *               type:
- *                 - string
+ *                 - integer
  *                 - 'null'
  */

@@ -7,19 +7,6 @@
  *
  *
  *
- *     LoginUser:
- *       type: object
- *       required:
- *         - email
- *         - password
- *       properties:
- *         email:
- *           type: string
- *           example: example@gmail.com
- *         password:
- *           type: string
- *           format: password
- *           example: pass1234
  *
  *
  *
@@ -92,7 +79,6 @@
  *         updatedAt:
  *           type: string
  *           example: "2024-08-07T23:40:28.356Z"
- *
  *
  *
  *

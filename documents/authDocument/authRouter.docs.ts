@@ -9,7 +9,19 @@
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/LoginUser'
+ *                type: object
+ *                required:
+ *                  - email
+ *                  - password
+ *                properties:
+ *                  email:
+ *                    type: string
+ *                    example: example@gmail.com
+ *                  password:
+ *                    type: string
+ *                    format: password
+ *                    example: pass1234
+ *
  *     responses:
  *       200:
  *         description: Success
