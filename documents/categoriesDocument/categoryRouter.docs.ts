@@ -48,7 +48,13 @@
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/CreateCategory'
+ *                type: object
+ *                required:
+ *                  - title
+ *                properties:
+ *                  title:
+ *                    type: string
+ *                    example: my category
  *     responses:
  *       200:
  *         description: Success
@@ -69,7 +75,13 @@
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/UpdateCategory'
+ *                type: object
+ *                required:
+ *                  - title
+ *                properties:
+ *                  title:
+ *                    type: string
+ *                    example: my category
  *     parameters:
  *       - name: categorySlug
  *         in: path

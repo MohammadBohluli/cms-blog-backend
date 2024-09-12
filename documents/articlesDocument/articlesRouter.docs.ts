@@ -5,6 +5,49 @@
  *     tags:
  *       - articles
  *     summary: Show all articles that published(not draft)
+ *     parameters:
+ *       - name: title
+ *         in: query
+ *         description: search article based on title
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: category
+ *         in: query
+ *         description: search article based on category(categories are 'and' operator not 'or') such as category-1,catgory-2,...
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: startCreatedAt
+ *         in: query
+ *         description: search article based on createdAt
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: endCreatedAt
+ *         in: query
+ *         description: search article based on createdAt
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: sortBy
+ *         in: query
+ *         description: example => updatedAt or -updatedAt
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: limit
+ *         in: query
+ *         description: limitation of per page to show content
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - name: page
+ *         in: query
+ *         description: page
+ *         required: false
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
  *         description: Success
@@ -71,7 +114,36 @@
  *          content:
  *            multipart/form-data:
  *              schema:
- *                $ref: '#/components/schemas/CreateArticle'
+ *                type: object
+ *                required:
+ *                  - title
+ *                  - categories
+ *                  - status
+ *                  - content
+ *                  - image
+ *                properties:
+ *                  title:
+ *                    type: string
+ *                    example: my title
+ *                  categories:
+ *                    type: array
+ *                    items:
+ *                      type: string
+ *                      example: my-category
+ *                  status:
+ *                    type: string
+ *                    enum:
+ *                      - published
+ *                      - draft
+ *                    example: published
+ *                  content:
+ *                    type: string
+ *                    minLength: 50
+ *                    example: this is my content
+ *                  image:
+ *                    type: string
+ *                    format: binary
+ *                    example: "http://localhost:3000/images/0843d5c7-Logo.jpg"
  *     responses:
  *       200:
  *         description: Success
@@ -99,7 +171,36 @@
  *          content:
  *            multipart/form-data:
  *              schema:
- *                $ref: '#/components/schemas/UpdateArticle'
+ *                type: object
+ *                required:
+ *                 - title
+ *                 - categories
+ *                 - status
+ *                 - content
+ *                 - image
+ *                properties:
+ *                 title:
+ *                   type: string
+ *                   example: my title
+ *                 categories:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: my-category
+ *                 status:
+ *                   type: string
+ *                   enum:
+ *                     - published
+ *                     - draft
+ *                   example: published
+ *                 content:
+ *                   type: string
+ *                   minLength: 50
+ *                   example: this is my content
+ *                 image:
+ *                   type: string
+ *                   format: binary
+ *                   example: "http://localhost:3000/images/0843d5c7-Logo.jpg"
  *     responses:
  *       200:
  *         description: Success
