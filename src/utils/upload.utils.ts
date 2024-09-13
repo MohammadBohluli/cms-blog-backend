@@ -21,6 +21,11 @@ class UploadImage {
   }
 
   public saveToStorage() {
+    const dir = path.join(__dirname, "../../images");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+
     fs.writeFile(this.imagePath, this.file.buffer, (error) => {
       if (error) logger.error(error.message);
       logger.info("✅ image successfully saved.");
