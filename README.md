@@ -11,6 +11,7 @@ This project is a Content Management System (CMS) API developed using Node.js, T
 - [Installation](#Installation)
 - [API Endpoints](#API-Endpoints)
 - [Environment Variables](#Environment-Variables)
+- [Coming Soon](#Coming-Soon)
 
 ## Features
 
@@ -178,3 +179,10 @@ docker logs -f nodejs
 ```bash
 docker compose down
 ```
+
+## Coming Soon
+- [ ]  add test case
+- [ ]  user management by admin
+- [ ]  strong check password
+- [ ]  improvment validation Email
+- [ ]  add like system
