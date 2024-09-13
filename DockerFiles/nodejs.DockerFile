@@ -1,6 +1,6 @@
 FROM node:20.17.0-slim
 
-RUN mkdir -p /app/cms-blog-backend && chown -R node:node /app
+RUN mkdir -p /app/cms-blog-backend/node_modules && chown -R node:node /app/cms-blog-backend
 
 WORKDIR /app/cms-blog-backend
 

@@ -18,6 +18,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/app/cms-blog-backend
+      - node_modules:/app/cms-blog-backend/node_modules
     depends_on:
       - mongodb
     env_file:
@@ -25,3 +26,4 @@ services:
 
 volumes:
   dbdata:
+  node_modules:
