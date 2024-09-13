@@ -143,6 +143,8 @@ Here are the summary endpoints offered by the CMS API:
     - Email: admin@gmail.com
     - Password: admin1234
 - for first time run application user admin is created but if you can disable user admin, just go to `server.ts` file and comment `await createUserAdmin();`
+- if you can connect to mongodb with compass just use this uri:
+    - `mongodb://localhost:3001`
 
 ## Steps
 
