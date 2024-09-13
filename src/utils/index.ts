@@ -10,3 +10,4 @@ export { default as UploadImage } from "./upload.utils";
 export { default as multerConfig } from "./multerConfig.utils";
 export { default as HttpStatusCode } from "./httpStatusCode.utils";
 export { default as swaggerDocs } from "./swagger.utils";
+export { default as createUserAdmin } from "./createUserAdmin.utils";

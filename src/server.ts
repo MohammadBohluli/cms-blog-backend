@@ -1,10 +1,10 @@
 import cors from "cors";
-import express, { Application } from "express";
+import express from "express";
 import articlesRouter from "./articles/article.routers";
 import authRouter from "./auth/auth.routers";
 import categoriesRouter from "./categoreis/category.routers";
 import { displayRequest, errorHandler } from "./middlewares";
-import { connectToDb, logger, swaggerDocs } from "./utils";
+import { connectToDb, createUserAdmin, logger, swaggerDocs } from "./utils";
 
 // config
 const app = express();
@@ -24,8 +24,9 @@ app.use("/api/articles", articlesRouter);
 app.use(errorHandler);
 
 // server start
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, async () => {
   logger.info(`✅ Server is Running 👉  http://localhost:${process.env.PORT}`);
-  connectToDb();
+  await connectToDb();
+  await createUserAdmin();
   swaggerDocs(app);
 });
