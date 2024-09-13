@@ -139,6 +139,10 @@ Here are the summary endpoints offered by the CMS API:
 ## Installation
 
 - **Prerequisites:** Ensure you have installed docker and Docker-compose on your local machine
+- **Default user admin for development**:
+    - Email: admin@gmail.com
+    - Password: admin1234
+- for first time run application user admin is created but if you can disable user admin, just go to `server.ts` file and comment `await createUserAdmin();`
 
 ## Steps
 
